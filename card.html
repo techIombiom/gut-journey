@@ -101,7 +101,11 @@
 <div id="gut-app">
 <div class="share-card-page">
 
-  <div id="hdr-card-share"></div>
+  <div style="padding:16px 20px;display:flex;justify-content:center;background:#FAF8F5;border-bottom:1px solid rgba(27,43,75,0.08);flex-shrink:0;">
+    <a href="https://iombio.com" target="_blank" style="line-height:0;">
+      <img src="https://iombio.com/wp-content/uploads/2025/11/IOM_BLACK.png" alt="iom Bioworks" style="height:26px;width:auto;" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span style="display:none;font-size:12px;font-weight:500;color:#1B2B4B;letter-spacing:0.1em;text-transform:uppercase;">iom Bioworks</span>
+    </a>
+  </div>
   <div style="display:flex;justify-content:center;margin:8px 0 0;"><div class="from-badge" id="from-badge"></div></div>
 
   <div id="card-container" style="width:100%;max-width:320px;"></div>
@@ -118,23 +122,24 @@
   </div>
 
 </div>
-  <div id="footer-card-share"></div>
+  <div style="background:#FAF8F5;border-top:1px solid rgba(27,43,75,0.08);padding:20px;text-align:center;">
+    <a href="https://iombio.com" target="_blank" style="display:inline-block;line-height:0;margin-bottom:10px;">
+      <img src="https://iombio.com/wp-content/uploads/2025/11/IOM_BLACK.png" alt="iom Bioworks" style="height:20px;width:auto;" onerror="this.style.display='none';">
+    </a>
+    <p style="font-size:11px;color:#C8C3BA;margin-bottom:8px;">Gut health &amp; microbiome science · Made in India</p>
+    <div style="display:flex;justify-content:center;gap:14px;flex-wrap:wrap;">
+      <a href="https://iombio.com/shop" target="_blank" style="font-size:11px;color:#999;text-decoration:none;">Shop</a>
+      <a href="https://iombio.com/gut-microbiome-tests" target="_blank" style="font-size:11px;color:#999;text-decoration:none;">Gut Tests</a>
+      <a href="https://iombio.com/about" target="_blank" style="font-size:11px;color:#999;text-decoration:none;">About</a>
+    </div>
+  </div>
 </div>
 
 <script src="js/state.js"></script>
 <script src="js/constants.js"></script>
-<script src="js/components.js"></script>
 <script>
 
 /* ── Read URL params ── */
-/* Render header + footer */
-setTimeout(() => {
-  const hh = document.getElementById('hdr-card-share');
-  if (hh) hh.innerHTML = renderHeader({ dark:false });
-  const ff = document.getElementById('footer-card-share');
-  if (ff) ff.innerHTML = renderFooter();
-}, 0);
-
 const params  = new URLSearchParams(window.location.search);
 const pKey    = params.get('p')  || '';  /* persona key */
 const score   = parseInt(params.get('s') || '0', 10);

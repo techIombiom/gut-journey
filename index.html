@@ -8,6 +8,25 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<style>
+.iom-logo { height:28px; width:auto; display:block; }
+.site-footer-inline {
+  background:#FAF8F5;
+  border-top:1px solid rgba(27,43,75,0.08);
+  padding:24px 20px 32px;
+  text-align:center;
+  flex-shrink:0;
+}
+.footer-links-row {
+  display:flex; justify-content:center; gap:16px;
+  flex-wrap:wrap; margin:12px 0 10px;
+}
+.footer-link-item {
+  font-size:12px; color:#999; text-decoration:none;
+  transition:color 0.2s;
+}
+.footer-link-item:hover { color:#1B2B4B; }
+</style>
 </head>
 <body>
 <div id="gut-app">
@@ -16,22 +35,41 @@
   <div id="screen-landing" class="screen active">
     <div class="particle-bg" id="particles"></div>
     <div style="padding:16px 20px;display:flex;justify-content:center;position:relative;z-index:2;flex-shrink:0;">
-      <a href="https://iombio.com" target="_blank" class="header-logo">
-        <img src="https://iombio.com/wp-content/uploads/2025/11/IOM_BLACK.png" alt="iom Bioworks" style="height:28px;width:auto;" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-        <span class="logo-fallback" style="display:none;">iom Bioworks</span>
+      <a href="https://iombio.com" target="_blank" style="display:block;line-height:0;">
+        <img src="https://iombio.com/wp-content/uploads/2025/11/IOM_BLACK.png"
+             alt="iom Bioworks" class="iom-logo"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <span style="display:none;font-size:13px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:#1B2B4B;">iom Bioworks</span>
       </a>
     </div>
-    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 28px 40px;text-align:center;position:relative;z-index:2;">
-      <div style="font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--pink);margin-bottom:12px;">A Day in Your Gut</div>
-      <h1 class="serif" style="font-size:52px;color:var(--navy);line-height:1.05;margin-bottom:18px;font-weight:600;">Your gut<br>has a <em style="color:var(--pink);">story</em></h1>
-      <p style="font-size:14px;color:var(--muted);line-height:1.75;margin-bottom:36px;max-width:290px;">See how your daily choices shape your microbiome — hour by hour</p>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 28px 32px;text-align:center;position:relative;z-index:2;">
+      <div style="font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:#E91E8C;margin-bottom:12px;">A Day in Your Gut</div>
+      <h1 class="serif" style="font-size:52px;color:#1B2B4B;line-height:1.05;margin-bottom:18px;font-weight:600;">Your gut<br>has a <em style="color:#E91E8C;">story</em></h1>
+      <p style="font-size:14px;color:#999;line-height:1.75;margin-bottom:32px;max-width:290px;">See how your daily choices shape your microbiome — hour by hour</p>
       <div class="landing-icons">
         <div class="landing-icon-item"><span class="landing-icon-emoji">🌅</span><div class="landing-icon-label">Your<br>Morning</div></div>
         <div class="landing-icon-item"><span class="landing-icon-emoji">🏃</span><div class="landing-icon-label">Run<br>The Gut</div></div>
         <div class="landing-icon-item"><span class="landing-icon-emoji">🎴</span><div class="landing-icon-label">Your<br>Persona</div></div>
       </div>
-      <button class="btn-primary" id="start-btn" style="max-width:320px;">Start Your Journey 🚀</button>
-      <p style="font-size:11px;color:#C8C3BA;margin-top:14px;">Takes ~3 minutes · No sign-up needed</p>
+      <button class="btn-primary" id="start-btn" style="max-width:320px;margin-bottom:12px;">Start Your Journey 🚀</button>
+      <p style="font-size:11px;color:#C8C3BA;">Takes ~3 minutes · No sign-up needed</p>
+    </div>
+    <!-- FOOTER on landing -->
+    <div class="site-footer-inline">
+      <a href="https://iombio.com" target="_blank" style="display:inline-block;line-height:0;margin-bottom:12px;">
+        <img src="https://iombio.com/wp-content/uploads/2025/11/IOM_BLACK.png"
+             alt="iom Bioworks" style="height:22px;width:auto;"
+             onerror="this.style.display='none';">
+      </a>
+      <p style="font-size:12px;color:#999;line-height:1.6;margin-bottom:10px;">Gut health &amp; microbiome science.<br>Made in India, backed by research.</p>
+      <div class="footer-links-row">
+        <a href="https://iombio.com/shop" target="_blank" class="footer-link-item">Shop</a>
+        <a href="https://iombio.com/gut-microbiome-tests" target="_blank" class="footer-link-item">Gut Tests</a>
+        <a href="https://iombio.com/about" target="_blank" class="footer-link-item">About</a>
+        <a href="https://iombio.com/contact" target="_blank" class="footer-link-item">Contact</a>
+        <a href="https://iombio.com/privacy-policy" target="_blank" class="footer-link-item">Privacy</a>
+      </div>
+      <p style="font-size:11px;color:#C8C3BA;">&copy; 2026 iom Bioworks. All rights reserved.</p>
     </div>
   </div>
 
@@ -39,15 +77,20 @@
   <div id="screen-personalise" class="screen">
     <div class="header">
       <button class="back-btn" id="back-to-landing">← Back</button>
-      <div class="logo-text">iom Bioworks</div>
+      <a href="https://iombio.com" target="_blank" style="position:absolute;left:50%;transform:translateX(-50%);line-height:0;">
+        <img src="https://iombio.com/wp-content/uploads/2025/11/IOM_BLACK.png"
+             alt="iom Bioworks" class="iom-logo"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <span style="display:none;font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:#1B2B4B;">iom Bioworks</span>
+      </a>
       <div style="width:48px;"></div>
     </div>
     <div style="padding:28px 22px 36px;flex:1;">
       <div class="time-stamp" style="margin-bottom:10px;">Let's trace your gut day</div>
-      <h2 class="serif" style="font-size:34px;color:var(--navy);line-height:1.15;margin-bottom:8px;font-weight:600;">What should<br>we call you?</h2>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.6;">Your journey adapts to your choices</p>
+      <h2 class="serif" style="font-size:34px;color:#1B2B4B;line-height:1.15;margin-bottom:8px;font-weight:600;">What should<br>we call you?</h2>
+      <p style="font-size:13px;color:#999;margin-bottom:28px;line-height:1.6;">Your journey adapts to your choices</p>
       <input class="name-input" type="text" id="name-input" placeholder="Your name" maxlength="20" autocomplete="off" autocorrect="off" />
-      <p style="font-size:13px;font-weight:500;color:var(--navy);margin:28px 0 14px;">Choose your gut explorer</p>
+      <p style="font-size:13px;font-weight:500;color:#1B2B4B;margin:28px 0 14px;">Choose your gut explorer</p>
       <div style="display:flex;gap:14px;margin-bottom:36px;">
         <div class="avatar-card" id="av-male"><span class="avatar-emoji">🚶</span><div class="avatar-label">Explorer</div></div>
         <div class="avatar-card" id="av-female"><span class="avatar-emoji">🚶‍♀️</span><div class="avatar-label">Explorer</div></div>
@@ -60,109 +103,142 @@
   <div id="screen-goal" class="screen">
     <div class="header">
       <button class="back-btn" id="back-to-personalise">← Back</button>
-      <div class="pill">Gut Goal</div>
-      <button class="mute-btn" id="mute-btn">🔊</button>
+      <a href="https://iombio.com" target="_blank" style="position:absolute;left:50%;transform:translateX(-50%);line-height:0;">
+        <img src="https://iombio.com/wp-content/uploads/2025/11/IOM_BLACK.png"
+             alt="iom Bioworks" class="iom-logo"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <span style="display:none;font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:#1B2B4B;">iom Bioworks</span>
+      </a>
+      <div class="pill" id="pill-goal" style="position:relative;z-index:2;">1 of 4</div>
     </div>
     <div style="padding:24px 22px 36px;flex:1;">
       <div class="time-stamp">Your gut goal</div>
-      <h2 class="serif" style="font-size:32px;color:var(--navy);line-height:1.2;margin-bottom:8px;font-weight:600;"><span id="goal-name">Hey</span>, what does<br>your gut <em style="color:var(--pink);">want most?</em></h2>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.6;">Choose one — your journey adapts to it</p>
+      <h2 class="serif" style="font-size:32px;color:#1B2B4B;line-height:1.2;margin-bottom:8px;font-weight:600;"><span id="goal-name">Hey</span>, what does<br>your gut <em style="color:#E91E8C;">want most?</em></h2>
+      <p style="font-size:13px;color:#999;margin-bottom:22px;line-height:1.6;">Choose one — your journey adapts to it</p>
       <div style="display:flex;flex-direction:column;gap:11px;margin-bottom:28px;">
-        <div class="option-card" data-goal="mood"><span class="option-emoji">🧠</span><div style="flex:1;padding-right:28px;"><div class="option-title">Better Mood</div><div class="option-sub">Your gut makes 90% of your serotonin. Let's fix the source.</div></div><div class="option-check">✓</div></div>
-        <div class="option-card" data-goal="immunity"><span class="option-emoji">🛡️</span><div style="flex:1;padding-right:28px;"><div class="option-title">Stronger Immunity</div><div class="option-sub">70% of your immune system lives in your gut. Feed it right.</div></div><div class="option-check">✓</div></div>
-        <div class="option-card" data-goal="energy"><span class="option-emoji">⚡</span><div style="flex:1;padding-right:28px;"><div class="option-title">More Energy</div><div class="option-sub">Your gut bacteria fuel every cell. Let's power you up.</div></div><div class="option-check">✓</div></div>
+        <div class="option-card" data-goal="mood">
+          <span class="option-emoji">🧠</span>
+          <div style="flex:1;padding-right:28px;"><div class="option-title">Better Mood</div><div class="option-sub">Your gut makes 90% of your serotonin. Let's fix the source.</div></div>
+          <div class="option-check">✓</div>
+        </div>
+        <div class="option-card" data-goal="immunity">
+          <span class="option-emoji">🛡️</span>
+          <div style="flex:1;padding-right:28px;"><div class="option-title">Stronger Immunity</div><div class="option-sub">70% of your immune system lives in your gut. Feed it right.</div></div>
+          <div class="option-check">✓</div>
+        </div>
+        <div class="option-card" data-goal="energy">
+          <span class="option-emoji">⚡</span>
+          <div style="flex:1;padding-right:28px;"><div class="option-title">More Energy</div><div class="option-sub">Your gut bacteria fuel every cell. Let's power you up.</div></div>
+          <div class="option-check">✓</div>
+        </div>
       </div>
       <button class="btn-primary" id="btn-goal-next" disabled>Next →</button>
     </div>
   </div>
 
-  <div id="footer-landing"></div>
 </div>
 
 <script src="js/state.js"></script>
 <script src="js/constants.js"></script>
-<script src="js/components.js"></script>
 <script>
-  GS.clear();
 
-  /* Render shared components */
-  const hP = document.getElementById('header-personalise');
-  if (hP) { hP.innerHTML = renderHeader({ showBack:true, backHref:'#', backLabel:'Back' }); }
-  const hG = document.getElementById('header-goal');
-  if (hG) { hG.innerHTML = renderHeader({ pill:'Gut Goal', showMute:true }); }
-  const fL = document.getElementById('footer-landing');
-  if (fL) { fL.innerHTML = renderFooter(); }
-  /* Re-bind back buttons after innerHTML render */
-  const backToLanding = document.querySelector('#header-personalise .back-btn');
-  if (backToLanding) backToLanding.addEventListener('click', (e) => { e.preventDefault(); goTo('landing'); });
-  const backToPersonalise = document.querySelector('#header-goal .back-btn');
-  if (backToPersonalise) backToPersonalise.addEventListener('click', (e) => { e.preventDefault(); goTo('personalise'); });
+/* ── All functions at TOP LEVEL — never inside DOMContentLoaded ── */
 
-  /* Read URL parameters on game start and save to state */
-  (function readUrlParams() {
-    const params = new URLSearchParams(window.location.search);
-    const wa  = params.get('wa')  || '';
-    const utm = params.get('utm_source') || 'direct';
-    if (wa || utm !== 'direct') {
-      GS.save({ whatsapp_number: wa, channel: utm });
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => {
+    if (s.classList.contains('active')) {
+      s.classList.remove('active');
+      s.classList.add('exit');
+      setTimeout(() => s.classList.remove('exit'), 400);
     }
-  })();
-
-  function goTo(id) {
-    document.querySelectorAll('.screen').forEach(s => {
-      if (s.classList.contains('active')) { s.classList.remove('active'); s.classList.add('exit'); setTimeout(() => s.classList.remove('exit'), 400); }
-    });
-    setTimeout(() => document.getElementById('screen-' + id).classList.add('active'), 60);
-  }
-
-  document.getElementById('start-btn').addEventListener('click', () => goTo('personalise'));
-  document.getElementById('back-to-landing').addEventListener('click', () => goTo('landing'));
-  document.getElementById('back-to-personalise').addEventListener('click', () => goTo('personalise'));
-
-  let avatar = null;
-  document.getElementById('av-male').addEventListener('click', () => { avatar = 'male'; document.getElementById('av-male').classList.add('selected'); document.getElementById('av-female').classList.remove('selected'); check(); });
-  document.getElementById('av-female').addEventListener('click', () => { avatar = 'female'; document.getElementById('av-female').classList.add('selected'); document.getElementById('av-male').classList.remove('selected'); check(); });
-
-  document.getElementById('name-input').addEventListener('input', check);
-
-  function check() {
-    const name = document.getElementById('name-input').value.trim();
-    document.getElementById('btn-go').disabled = !(name.length > 0 && avatar);
-  }
-
-  document.getElementById('btn-go').addEventListener('click', () => {
-    const name = document.getElementById('name-input').value.trim();
-    GS.save({ name, avatar });
-    document.getElementById('goal-name').textContent = name;
-    goTo('goal');
   });
+  setTimeout(() => {
+    const el = document.getElementById('screen-' + id);
+    if (el) el.classList.add('active');
+  }, 60);
+}
 
-  let goal = null;
-  document.querySelectorAll('[data-goal]').forEach(card => {
-    card.addEventListener('click', () => {
-      document.querySelectorAll('[data-goal]').forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
-      goal = card.dataset.goal;
-      document.getElementById('btn-goal-next').disabled = false;
-    });
+/* ── Init on load ── */
+GS.clear();
+
+/* Read URL parameters */
+(function() {
+  const p = new URLSearchParams(window.location.search);
+  const wa  = p.get('wa')  || '';
+  const utm = p.get('utm_source') || 'direct';
+  if (wa || utm !== 'direct') GS.save({ whatsapp_number: wa, channel: utm });
+})();
+
+/* Start button */
+document.getElementById('start-btn').addEventListener('click', function() {
+  goTo('personalise');
+});
+
+/* Back buttons */
+document.getElementById('back-to-landing').addEventListener('click', function() {
+  goTo('landing');
+});
+document.getElementById('back-to-personalise').addEventListener('click', function() {
+  goTo('personalise');
+});
+
+/* Avatar selection */
+var selectedAvatar = null;
+document.getElementById('av-male').addEventListener('click', function() {
+  selectedAvatar = 'male';
+  document.getElementById('av-male').classList.add('selected');
+  document.getElementById('av-female').classList.remove('selected');
+  checkPersonalise();
+});
+document.getElementById('av-female').addEventListener('click', function() {
+  selectedAvatar = 'female';
+  document.getElementById('av-female').classList.add('selected');
+  document.getElementById('av-male').classList.remove('selected');
+  checkPersonalise();
+});
+
+function checkPersonalise() {
+  var name = document.getElementById('name-input').value.trim();
+  document.getElementById('btn-go').disabled = !(name.length > 0 && selectedAvatar);
+}
+
+document.getElementById('name-input').addEventListener('input', checkPersonalise);
+
+/* Let's Go button */
+document.getElementById('btn-go').addEventListener('click', function() {
+  var name = document.getElementById('name-input').value.trim();
+  GS.save({ name: name, avatar: selectedAvatar });
+  document.getElementById('goal-name').textContent = name;
+  goTo('goal');
+});
+
+/* Goal selection */
+var selectedGoal = null;
+document.querySelectorAll('[data-goal]').forEach(function(card) {
+  card.addEventListener('click', function() {
+    document.querySelectorAll('[data-goal]').forEach(function(c) { c.classList.remove('selected'); });
+    card.classList.add('selected');
+    selectedGoal = card.dataset.goal;
+    document.getElementById('btn-goal-next').disabled = false;
   });
+});
 
-  document.getElementById('btn-goal-next').addEventListener('click', () => {
-    GS.save({ goal });
-    window.location.href = 'game.html';
-  });
+/* Goal next */
+document.getElementById('btn-goal-next').addEventListener('click', function() {
+  GS.save({ goal: selectedGoal });
+  window.location.href = 'game.html';
+});
 
-  let muted = false;
-  document.getElementById('mute-btn').addEventListener('click', () => { muted = !muted; document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊'; });
-
-  const pBg = document.getElementById('particles');
-  const pColors = ['#E91E8C','#4CAF50','#1B2B4B'];
-  for (let i = 0; i < 22; i++) {
-    const d = document.createElement('div'); d.className = 'particle';
-    const size = 6 + Math.random() * 32;
-    d.style.cssText = `width:${size}px;height:${size}px;background:${pColors[Math.floor(Math.random()*3)]};left:${Math.random()*100}%;top:${Math.random()*100}%;animation-duration:${8+Math.random()*12}s;animation-delay:${-Math.random()*12}s;`;
-    pBg.appendChild(d);
-  }
+/* Floating particles */
+var pBg = document.getElementById('particles');
+var pColors = ['#E91E8C','#4CAF50','#1B2B4B'];
+for (var i = 0; i < 22; i++) {
+  var d = document.createElement('div');
+  d.className = 'particle';
+  var size = 6 + Math.random() * 32;
+  d.style.cssText = 'width:'+size+'px;height:'+size+'px;background:'+pColors[Math.floor(Math.random()*3)]+';left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;animation-duration:'+(8+Math.random()*12)+'s;animation-delay:'+(-Math.random()*12)+'s;';
+  pBg.appendChild(d);
+}
 </script>
 </body>
 </html>

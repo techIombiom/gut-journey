@@ -42,7 +42,13 @@
   </div>
 
   <div id="screen-card" class="screen" style="background:var(--navy);overflow-y:auto;">
-    <div id="hdr-card"></div>
+    <div style="padding:16px 20px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:#0d1f3c;">
+      <div style="width:36px;"></div>
+      <a href="https://iombio.com" target="_blank" style="line-height:0;">
+        <img src="https://iombio.com/wp-content/uploads/2025/11/IOM_WHITE.png" alt="iom Bioworks" style="height:26px;width:auto;" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span style="display:none;font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.6);">iom Bioworks</span>
+      </a>
+      <button class="mute-btn" id="mute-btn" style="color:white;opacity:0.5;">🔊</button>
+    </div>
     <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:0 20px 36px;">
       <div id="persona-card-wrap" style="opacity:0;width:100%;max-width:320px;margin-bottom:24px;"></div>
       <div style="width:100%;max-width:320px;display:flex;flex-direction:column;gap:10px;">
@@ -52,7 +58,19 @@
         <button class="btn-secondary" onclick="restartGame()" style="background:transparent;color:rgba(255,255,255,0.4);border-color:rgba(255,255,255,0.15);font-size:13px;padding:12px;">Retake the Journey &#x1F504;</button>
       </div>
     </div>
-    <div id="footer-results"></div>
+    <div style="background:#0d1f3c;border-top:1px solid rgba(255,255,255,0.06);padding:20px;text-align:center;flex-shrink:0;">
+      <a href="https://iombio.com" target="_blank" style="display:inline-block;line-height:0;margin-bottom:10px;">
+        <img src="https://iombio.com/wp-content/uploads/2025/11/IOM_WHITE.png" alt="iom Bioworks" style="height:20px;width:auto;opacity:0.6;" onerror="this.style.display='none';">
+      </a>
+      <p style="font-size:11px;color:rgba(255,255,255,0.25);margin-bottom:8px;">Gut health &amp; microbiome science · Made in India</p>
+      <div style="display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:8px;">
+        <a href="https://iombio.com/shop" target="_blank" style="font-size:11px;color:rgba(255,255,255,0.3);text-decoration:none;">Shop</a>
+        <a href="https://iombio.com/gut-microbiome-tests" target="_blank" style="font-size:11px;color:rgba(255,255,255,0.3);text-decoration:none;">Gut Tests</a>
+        <a href="https://iombio.com/about" target="_blank" style="font-size:11px;color:rgba(255,255,255,0.3);text-decoration:none;">About</a>
+        <a href="https://iombio.com/privacy-policy" target="_blank" style="font-size:11px;color:rgba(255,255,255,0.3);text-decoration:none;">Privacy</a>
+      </div>
+      <p style="font-size:11px;color:rgba(255,255,255,0.15);">&copy; 2026 iom Bioworks</p>
+    </div>
   </div>
 
 </div>
@@ -61,20 +79,13 @@
 <script src="js/state.js"></script>
 <script src="js/constants.js"></script>
 <script src="js/scoring.js"></script>
-<script src="js/components.js"></script>
 <script>
 const s = GS.get();
 if (!s.name || !s.personaKey) window.location.href = 'index.html';
 
 GS.save({ levels_reached: 4 });
 
-/* Render card screen header + footer after card is shown */
-function renderCardScreenComponents() {
-  const hc = document.getElementById('hdr-card');
-  if (hc) hc.innerHTML = renderHeader({ dark:true, showMute:true });
-  const fr = document.getElementById('footer-results');
-  if (fr) fr.innerHTML = renderFooter({ dark:true });
-}
+function renderCardScreenComponents() { /* hardcoded in HTML */ }
 
 function goTo(id) {
   document.querySelectorAll('.screen').forEach(sc => {

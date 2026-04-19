@@ -189,13 +189,25 @@
     </div>
   </div>
 
-  <div id="footer-game"></div>
+  
+  <div class="site-footer-inline" style="background:#FAF8F5;border-top:1px solid rgba(27,43,75,0.08);padding:20px;text-align:center;flex-shrink:0;">
+    <a href="https://iombio.com" target="_blank" style="display:inline-block;line-height:0;margin-bottom:10px;">
+      <img src="https://iombio.com/wp-content/uploads/2025/11/IOM_BLACK.png" alt="iom Bioworks" style="height:20px;width:auto;" onerror="this.style.display='none';">
+    </a>
+    <p style="font-size:11px;color:#C8C3BA;margin-bottom:8px;">Gut health &amp; microbiome science · Made in India</p>
+    <div style="display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:8px;">
+      <a href="https://iombio.com/shop" target="_blank" style="font-size:11px;color:#999;text-decoration:none;">Shop</a>
+      <a href="https://iombio.com/gut-microbiome-tests" target="_blank" style="font-size:11px;color:#999;text-decoration:none;">Gut Tests</a>
+      <a href="https://iombio.com/about" target="_blank" style="font-size:11px;color:#999;text-decoration:none;">About</a>
+      <a href="https://iombio.com/privacy-policy" target="_blank" style="font-size:11px;color:#999;text-decoration:none;">Privacy</a>
+    </div>
+    <p style="font-size:11px;color:#C8C3BA;">&copy; 2026 iom Bioworks</p>
+  </div>
 </div>
 
 <script src="js/state.js"></script>
 <script src="js/constants.js"></script>
 <script src="js/scoring.js"></script>
-<script src="js/components.js"></script>
 
 <script>
 
@@ -558,26 +570,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const state = GS.get();
   if (!state.name) { window.location.href = 'index.html'; return; }
 
-  /* Render shared headers */
-  const headerConfig = [
-    { id:'hdr-morning',   pill:'Morning · 1 of 4',   backHref:'index.html' },
-    { id:'hdr-lunch',     pill:'Lunch · 2 of 4',     backHref:'#' },
-    { id:'hdr-afternoon', pill:'Afternoon · 3 of 4', backHref:'#' },
-    { id:'hdr-dinner',    pill:'Evening · 4 of 4',   backHref:'#' },
-  ];
-  headerConfig.forEach(cfg => {
-    const el = document.getElementById(cfg.id);
-    if (el) el.innerHTML = renderHeader({ pill:cfg.pill, showMute:true, showBack:true, backHref:cfg.backHref, backLabel:'Back' });
-  });
-  /* Re-bind back buttons */
-  const bLunch = document.querySelector('#hdr-lunch .back-btn');
-  if (bLunch) bLunch.addEventListener('click', e => { e.preventDefault(); goTo('morning'); });
-  const bAfternoon = document.querySelector('#hdr-afternoon .back-btn');
-  if (bAfternoon) bAfternoon.addEventListener('click', e => { e.preventDefault(); goTo('lunch'); });
-  const bDinner = document.querySelector('#hdr-dinner .back-btn');
-  if (bDinner) bDinner.addEventListener('click', e => { e.preventDefault(); goTo('afternoon'); });
-  const fg = document.getElementById('footer-game');
-  if (fg) fg.innerHTML = renderFooter();
+  /* Headers and footer hardcoded in HTML */
 
   // personalise name
   const nameEl = document.getElementById('morning-name');
