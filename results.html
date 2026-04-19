@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Your Gut Persona — iom Bioworks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  #level4-screen { background: #0d1f3c; }
+  .l4-text { font-family:'Cormorant Garamond',serif; color:white; text-align:center; font-style:italic; }
+  @keyframes orbPop { 0%{transform:scale(0);opacity:1;} 60%{transform:scale(1.3);opacity:1;} 100%{transform:scale(1);opacity:1;} }
+  .orb-collect-anim { animation: orbPop 0.3s ease; }
+  @keyframes cardReveal { 0%{transform:scale(0.4) translateY(40px);opacity:0;} 100%{transform:scale(1) translateY(0);opacity:1;} }
+  .card-reveal { animation: cardReveal 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+  @keyframes countUp { from{opacity:0;} to{opacity:1;} }
+</style>
+</head>
+<body>
+<div id="gut-app">
+
+  <!-- LEVEL 4 CINEMATIC -->
+  <div id="screen-level4" class="screen active" style="background:#0d1f3c;flex-direction:column;">
+    <div class="runner-header" style="background:#0d1f3c;">
+      <div class="runner-label">Your gut — fully unlocked</div>
+      <div class="orb-count" id="l4-orb-count">⚡ 0 / 50</div>
+    </div>
+    <div style="background:#0d1f3c;padding:0 18px 10px;flex-shrink:0;">
+      <div class="timer-bar-wrap" style="background:#0d1f3c;"><div class="timer-bar-fill" id="l4-timer" style="width:100%;"></div></div>
+    </div>
+    <div style="position:relative;flex:1;overflow:hidden;">
+      <canvas id="l4-canvas"></canvas>
+      <div id="l4-text-overlay" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:32px 24px;pointer-events:none;z-index:3;text-align:center;">
+        <div id="l4-msg" class="l4-text" style="font-size:24px;opacity:0;transition:opacity 0.8s;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PERSONA CARD -->
+  <div id="screen-card" class="screen" style="background:var(--navy);">
+    <div style="padding:20px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
+      <div class="logo-text" style="color:rgba(255,255,255,0.6);">iom Bioworks</div>
+      <button class="mute-btn" style="color:white;">🔊</button>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:0 20px 32px;overflow-y:auto;">
+      <div id="persona-card-wrap" style="opacity:0;width:100%;max-width:320px;margin-bottom:24px;"></div>
+      <div style="width:100%;max-width:320px;display:flex;flex-direction:column;gap:10px;">
+        <button class="btn-wa" id="btn-wa">💬 Share on WhatsApp</button>
+        <button class="btn-ig" id="btn-ig">📸 Share on Instagram</button>
+        <button class="btn-primary" onclick="window.location.href='recommend.html'" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);">What does my gut actually need? →</button>
+        <button class="btn-secondary" onclick="restartGame()" style="background:transparent;color:rgba(255,255,255,0.5);border-color:rgba(255,255,255,0.2);font-size:13px;padding:12px;">Retake the Journey 🔄</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="js/state.js"></script>
+<script src="js/constants.js"></script>
+<script src="js/scoring.js"></script>
+<script>
+const s = GS.get();
+if (!s.name || !s.personaKey) window.location.href = 'index.html';
+
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(sc => {
+    if (sc.classList.contains('active')) { sc.classList.remove('active'); sc.classList.add('exit'); setTimeout(() => sc.classList.remove('exit'), 400); }
+  });
+  setTimeout(() => { const el = document.getElementById('screen-' + id); if(el) el.classList.add('active'); }, 60);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('visible');
+  setTimeout(() => t.classList.remove('visible'), 3000);
+}
+
+function restartGame() { GS.clear(); window.location.href = 'index.html'; }
+
+// LEVEL 4 CINEMATIC
+(function runL4() {
+  const canvas = document.getElementById('l4-canvas');
+  const container = canvas.parentElement;
+  const W = container.offsetWidth || 375, H = container.offsetHeight || 300;
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  const TOTAL = 50, DURATION = 10000;
+  const ZONES = [H*0.22, H*0.5, H*0.78];
+  let collected = 0, orbs = [], popups = [], orbsSpawned = 0, lastSpawn = null, startTime = null, rafId = null;
+  const RUNNER_X = W*0.13;
+  const RUNNER_EMOJI = GS.val('avatar','male')==='female'?'🚶‍♀️':'🚶';
+  const msgs = [
+    { time: 2000, text: 'This is your gut — fully optimised' },
+    { time: 5000, text: 'GMT + Prebiotics. Nothing left uncaptured.' },
+    { time: 8000, text: s.name + ', meet your Gut Persona 🎴' }
+  ];
+  let msgShown = [];
+
+  function frame(now) {
+    if (!startTime) { startTime = now; lastSpawn = now; }
+    const elapsed = now - startTime, progress = Math.min(elapsed/DURATION, 1);
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle = '#0a1528'; ctx.fillRect(0,0,W,H);
+
+    for (let i=0;i<W;i+=4) {
+      const a = 0.04+0.03*Math.sin(i*0.05+elapsed*0.002);
+      ctx.fillStyle = `rgba(76,175,80,${a})`; ctx.fillRect(i,0,2,H);
+    }
+
+    const spawnI = 200;
+    if (now-lastSpawn > spawnI && orbsSpawned < TOTAL) {
+      const zone = Math.floor(Math.random()*3);
+      orbs.push({x:W+10, y:ZONES[zone], id:'l4_'+orbsSpawned});
+      orbsSpawned++; lastSpawn=now;
+    }
+
+    const runnerY = ZONES[1] + 30*Math.sin(elapsed*0.003);
+    orbs = orbs.filter(orb => {
+      orb.x -= 200/60;
+      const dx=(RUNNER_X+14)-orb.x, dy=runnerY-orb.y;
+      if (Math.sqrt(dx*dx+dy*dy)<26) {
+        collected++; document.getElementById('l4-orb-count').textContent='⚡ '+collected+' / 50';
+        popups.push({x:orb.x,y:orb.y-16,text:'✨',color:'#FFD700',age:0,life:30});
+        return false;
+      }
+      if (orb.x<-20) return false;
+      ctx.fillStyle='#FFD700'; ctx.globalAlpha=0.9;
+      ctx.beginPath(); ctx.arc(orb.x,orb.y,12,0,Math.PI*2); ctx.fill();
+      ctx.strokeStyle='rgba(255,215,0,0.3)'; ctx.lineWidth=5;
+      ctx.beginPath(); ctx.arc(orb.x,orb.y,18,0,Math.PI*2); ctx.stroke();
+      ctx.globalAlpha=1;
+      return true;
+    });
+
+    ctx.globalAlpha=1; ctx.font='26px serif'; ctx.textBaseline='middle'; ctx.textAlign='left';
+    ctx.shadowColor='rgba(255,255,255,0.8)'; ctx.shadowBlur=12;
+    ctx.fillText(RUNNER_EMOJI, RUNNER_X-2, runnerY);
+    ctx.shadowBlur=0;
+
+    popups=popups.filter(p=>{p.age++;ctx.globalAlpha=Math.max(0,1-p.age/p.life);ctx.font='16px serif';ctx.textAlign='center';ctx.fillText(p.text,p.x,p.y-p.age*0.5);ctx.globalAlpha=1;return p.age<p.life;});
+    ctx.textAlign='left';
+
+    document.getElementById('l4-timer').style.width=Math.round((1-progress)*100)+'%';
+
+    const msgEl = document.getElementById('l4-msg');
+    msgs.forEach(m => {
+      if (elapsed>m.time && !msgShown.includes(m.time)) {
+        msgShown.push(m.time);
+        msgEl.textContent=m.text; msgEl.style.opacity='1';
+        setTimeout(()=>{msgEl.style.opacity='0';},1800);
+      }
+    });
+
+    if (progress>=1) { cancelAnimationFrame(rafId); setTimeout(showCard, 500); return; }
+    rafId = requestAnimationFrame(frame);
+  }
+  rafId = requestAnimationFrame(frame);
+})();
+
+function showCard() {
+  goTo('card');
+  setTimeout(() => {
+    const persona = PERSONAS[s.personaKey];
+    if (!persona) return;
+    const wrap = document.getElementById('persona-card-wrap');
+    const g1 = persona.gradient[0], g2 = persona.gradient[1];
+
+    wrap.innerHTML = `
+      <div class="persona-card card-reveal" id="persona-card">
+        <div class="persona-card-header" style="background:linear-gradient(135deg,${g1},${g2});">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;width:100%;margin-bottom:12px;">
+            <div style="font-size:10px;color:rgba(255,255,255,0.7);font-weight:500;letter-spacing:0.1em;text-transform:uppercase;">iom Bioworks</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:0.06em;">Gut Persona</div>
+          </div>
+          <div style="font-size:52px;margin-bottom:10px;">${persona.emoji}</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:white;font-weight:600;margin-bottom:4px;">${persona.name}</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.75);">${s.name}'s Gut Profile</div>
+        </div>
+        <div class="persona-card-body">
+          <div style="text-align:center;margin-bottom:16px;">
+            <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Gut Score</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:56px;color:var(--pink);font-weight:600;line-height:1;" id="score-display">0</div>
+            <div style="font-size:12px;color:var(--muted);">out of 100</div>
+          </div>
+          <div>
+            <div class="stat-bar-row"><div class="stat-bar-label">Fiber Level</div><div class="stat-bar-wrap"><div class="stat-bar-fill" id="bar-fiber"></div></div><div class="stat-bar-val" id="val-fiber">0</div></div>
+            <div class="stat-bar-row"><div class="stat-bar-label">Stress Index</div><div class="stat-bar-wrap"><div class="stat-bar-fill" id="bar-stress" style="background:#E91E8C;"></div></div><div class="stat-bar-val" id="val-stress">0</div></div>
+            <div class="stat-bar-row" style="margin-bottom:0;"><div class="stat-bar-label">Gut Diversity</div><div class="stat-bar-wrap"><div class="stat-bar-fill" id="bar-div"></div></div><div class="stat-bar-val" id="val-div">0</div></div>
+          </div>
+        </div>
+        <div class="persona-card-footer">
+          <p style="font-size:13px;color:var(--navy);line-height:1.6;margin-bottom:6px;">${persona.line1}</p>
+          <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px;">${persona.line2}</p>
+          <div style="font-size:11px;color:var(--pink);font-weight:500;">iombio.com</div>
+        </div>
+      </div>`;
+
+    wrap.style.opacity='1';
+
+    let n=0;
+    const scoreEl=document.getElementById('score-display');
+    const iv=setInterval(()=>{n=Math.min(n+2,s.finalScore);scoreEl.textContent=n;if(n>=s.finalScore)clearInterval(iv);},30);
+
+    setTimeout(()=>{
+      document.getElementById('bar-fiber').style.width=s.fiberLevel+'%';
+      document.getElementById('val-fiber').textContent=s.fiberLevel;
+      document.getElementById('bar-stress').style.width=s.stressIndex+'%';
+      document.getElementById('val-stress').textContent=s.stressIndex;
+      document.getElementById('bar-div').style.width=s.gutDiversity+'%';
+      document.getElementById('val-div').textContent=s.gutDiversity;
+    }, 600);
+
+    fireWebhook();
+  }, 400);
+}
+
+document.getElementById('btn-wa').addEventListener('click', () => {
+  const persona = PERSONAS[s.personaKey];
+  const msg = encodeURIComponent(
+    `I just discovered I'm a ${persona.name} 🎴\nMy Gut Score is ${s.finalScore}/100.\n\n${persona.line1}\n\nFind out your Gut Persona →\nhttps://gut-journey.vercel.app\n\n#GutJourney #iomBioworks`
+  );
+  window.open('https://wa.me/?text=' + msg, '_blank');
+});
+
+document.getElementById('btn-ig').addEventListener('click', () => {
+  showToast('📸 Screenshot your card and share to Instagram Stories!');
+});
+
+function fireWebhook() {
+  const payload = {
+    player_name: s.name, timestamp: new Date().toISOString(),
+    channel: new URLSearchParams(window.location.search).get('utm_source') || 'direct',
+    avatar: s.avatar, goal_chosen: s.goal,
+    choice_morning: s.choice_morning, choice_afternoon: s.choice_afternoon,
+    choice_lunch_base: s.lunch_base, choice_lunch_protein: s.lunch_protein,
+    choice_lunch_veg: s.lunch_veg, choice_lunch_side: s.lunch_side,
+    choice_dinner: s.choice_dinner,
+    morning_score: s.morning_score, afternoon_score: s.afternoon_score,
+    lunch_score: s.lunch_score, dinner_score: s.dinner_score,
+    runner1_collected: s.runner1_collected, runner2_collected: s.runner2_collected, runner3_collected: s.runner3_collected,
+    behavioural_score: s.behavioural, runner_score: s.runnerScore,
+    final_score: s.finalScore, persona: s.personaKey, boss: s.boss
+  };
+  const webhookUrl = 'https://hook.eu1.make.com/PLACEHOLDER_REPLACE_WITH_REAL_URL';
+  fetch(webhookUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) }).catch(()=>{});
+}
+</script>
+</body>
+</html>

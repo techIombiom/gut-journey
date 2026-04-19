@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>A Day in Your Gut — iom Bioworks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="gut-app">
+
+  <!-- MORNING CHOICE -->
+  <div id="screen-morning" class="screen active">
+    <div class="header">
+      <a href="index.html" class="back-btn">← Back</a>
+      <div class="pill">Morning · 1 of 4</div>
+      <button class="mute-btn">🔊</button>
+    </div>
+    <div style="padding:22px 22px 36px;flex:1;">
+      <div class="time-stamp">🌅 6:00 AM</div>
+      <h2 class="serif" style="font-size:30px;color:var(--navy);line-height:1.2;margin-bottom:8px;font-weight:600;"><span id="morning-name">Your</span> gut bacteria<br>just woke up.</h2>
+      <p style="font-size:13px;color:#888;line-height:1.65;margin-bottom:22px;">What's the first thing you give them?</p>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;" id="morning-options"></div>
+      <button class="btn-primary" id="btn-morning-next" disabled>See Your Gut React →</button>
+    </div>
+  </div>
+
+  <!-- RUNNER 1 -->
+  <div id="screen-runner1" class="screen" style="background:var(--runner-bg);flex-direction:column;">
+    <div class="runner-header">
+      <div class="runner-label">Your gut at 6am</div>
+      <div class="orb-count" id="orb-count-display">⚡ 0 / 20</div>
+    </div>
+    <div style="background:var(--runner-bg);padding:0 18px 10px;flex-shrink:0;">
+      <div class="timer-bar-wrap"><div class="timer-bar-fill" id="timer-bar" style="width:100%;"></div></div>
+    </div>
+    <div style="position:relative;flex:1;overflow:hidden;">
+      <canvas id="runner-canvas"></canvas>
+      <div class="prerunner-overlay visible" id="prerunner-overlay">
+        <div class="prerunner-icon">🏃</div>
+        <div class="prerunner-title">Your gut right now</div>
+        <div class="prerunner-body">Watch how many prebiotic particles your gut can capture on your current diet.</div>
+        <div class="tap-hint">
+          <div class="tap-hint-item"><div class="tap-hint-arrow">👆</div><div class="tap-hint-label">Tap upper half<br>to move up</div></div>
+          <div class="tap-hint-item"><div class="tap-hint-arrow">👇</div><div class="tap-hint-label">Tap lower half<br>to move down</div></div>
+        </div>
+        <div class="prerunner-countdown" id="prerunner-count">Starting in 3...</div>
+      </div>
+      <div class="flash-overlay" id="flash-overlay">
+        <div class="flash-tag">🔬 Gut Microbiome Test</div>
+        <div class="flash-main">This is your gut —<br>fully optimised</div>
+        <div class="flash-sub">A GMT reveals hidden prebiotic pathways your gut can't find alone.</div>
+      </div>
+      <div class="summary-overlay" id="summary-overlay">
+        <div class="summary-label-top">Level 1 Complete — 6am Gut</div>
+        <div class="summary-score" id="summary-score">0</div>
+        <div class="summary-of" id="summary-of">prebiotic particles captured out of 20</div>
+        <div class="summary-bar-wrap"><div class="summary-bar-fill" id="summary-bar"></div></div>
+        <div class="summary-msg" id="summary-msg"></div>
+        <div class="summary-hint">💡 Diet changes can double this. A GMT can unlock even more hidden pathways.</div>
+        <button class="btn-primary" id="summary-next-btn" style="max-width:280px;">Continue →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LUNCH CHOICE -->
+  <div id="screen-lunch" class="screen">
+    <div class="header">
+      <button class="back-btn" id="back-to-morning">← Back</button>
+      <div class="pill">Lunch · 2 of 4</div>
+      <button class="mute-btn">🔊</button>
+    </div>
+    <div style="padding:22px 22px 36px;flex:1;">
+      <div class="time-stamp">☀️ 1:00 PM</div>
+      <h2 class="serif" style="font-size:30px;color:var(--navy);line-height:1.2;margin-bottom:8px;font-weight:600;">Lunch break.<br>Your gut's <em style="color:var(--pink);">busiest moment.</em></h2>
+      <p style="font-size:13px;color:#888;line-height:1.65;margin-bottom:20px;">Build your actual plate — not your ideal one.</p>
+      <div id="lunch-sections"></div>
+      <button class="btn-primary" id="btn-lunch-next" disabled style="margin-top:8px;">See Your Gut Process It →</button>
+    </div>
+  </div>
+
+  <!-- RUNNER 2 -->
+  <div id="screen-runner2" class="screen" style="background:#1a1a0d;flex-direction:column;">
+    <div class="runner-header" style="background:#1a1a0d;">
+      <div class="runner-label">Your gut at 1pm</div>
+      <div class="orb-count" id="orb-count-display-2">⚡ 0 / 30</div>
+    </div>
+    <div style="background:#1a1a0d;padding:0 18px 10px;flex-shrink:0;">
+      <div class="timer-bar-wrap" style="background:#1a1a0d;"><div class="timer-bar-fill" id="timer-bar-2" style="width:100%;"></div></div>
+    </div>
+    <div style="position:relative;flex:1;overflow:hidden;">
+      <canvas id="runner-canvas-2"></canvas>
+      <div class="prerunner-overlay visible" id="prerunner-overlay-2">
+        <div class="prerunner-icon">☀️</div>
+        <div class="prerunner-title">1pm. Lunch is done.</div>
+        <div class="prerunner-body">Watch what your gut does with what you gave it. Tap to navigate — collect as many prebiotics as you can.</div>
+        <div class="tap-hint">
+          <div class="tap-hint-item"><div class="tap-hint-arrow">👆</div><div class="tap-hint-label">Tap upper half<br>to move up</div></div>
+          <div class="tap-hint-item"><div class="tap-hint-arrow">👇</div><div class="tap-hint-label">Tap lower half<br>to move down</div></div>
+        </div>
+        <div class="prerunner-countdown" id="prerunner-count-2">Starting in 3...</div>
+      </div>
+      <div class="flash-overlay" id="flash-overlay-2">
+        <div class="flash-tag">🔬 Gut Microbiome Test</div>
+        <div class="flash-main">Imagine what the right<br>fuel could do 🌿</div>
+        <div class="flash-sub">Better data = better absorption. A GMT shows you exactly where your gut is leaving nutrients uncaptured.</div>
+      </div>
+      <div class="summary-overlay" id="summary-overlay-2">
+        <div class="summary-label-top">Level 2 Complete — 1pm Gut</div>
+        <div class="summary-score" id="summary-score-2">0</div>
+        <div class="summary-of">prebiotic particles captured out of 30</div>
+        <div class="summary-bar-wrap"><div class="summary-bar-fill" id="summary-bar-2"></div></div>
+        <div class="summary-msg" id="summary-msg-2"></div>
+        <div class="summary-hint">💡 This is where a GMT changes everything — it shows the hidden pathways →</div>
+        <button class="btn-primary" id="summary-next-btn-2" style="max-width:280px;">Continue →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AFTERNOON CHOICE -->
+  <div id="screen-afternoon" class="screen">
+    <div class="header">
+      <button class="back-btn" id="back-to-lunch">← Back</button>
+      <div class="pill">Afternoon · 3 of 4</div>
+      <button class="mute-btn">🔊</button>
+    </div>
+    <div style="padding:22px 22px 36px;flex:1;">
+      <div class="time-stamp">🌤️ 3:47 PM</div>
+      <h2 class="serif" style="font-size:30px;color:var(--navy);line-height:1.2;margin-bottom:8px;font-weight:600;">Energy dip.<br>The gut tunnel <em style="color:var(--pink);">splits.</em></h2>
+      <p style="font-size:13px;color:#888;line-height:1.65;margin-bottom:22px;">Which path do you actually take?</p>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;" id="afternoon-options"></div>
+      <button class="btn-primary" id="btn-afternoon-next" disabled>See The Afternoon Gut →</button>
+    </div>
+  </div>
+
+  <!-- RUNNER 3 -->
+  <div id="screen-runner3" class="screen" style="background:#0d2010;flex-direction:column;">
+    <div class="runner-header" style="background:#0d2010;">
+      <div class="runner-label">Your gut at 4pm</div>
+      <div class="orb-count" id="orb-count-display-3">⚡ 0 / 40</div>
+    </div>
+    <div style="background:#0d2010;padding:0 18px 10px;flex-shrink:0;">
+      <div class="timer-bar-wrap" style="background:#0d2010;"><div class="timer-bar-fill" id="timer-bar-3" style="width:100%;"></div></div>
+    </div>
+    <div style="position:relative;flex:1;overflow:hidden;">
+      <canvas id="runner-canvas-3"></canvas>
+      <div class="prerunner-overlay visible" id="prerunner-overlay-3">
+        <div class="prerunner-icon">🔬</div>
+        <div class="prerunner-title">What a GMT unlocks</div>
+        <div class="prerunner-body">A Gut Microbiome Test reveals hidden prebiotic pathways your gut can't find alone. Watch what happens when the map is complete.</div>
+        <div class="tap-hint">
+          <div class="tap-hint-item"><div class="tap-hint-arrow">👆</div><div class="tap-hint-label">Tap upper half<br>to move up</div></div>
+          <div class="tap-hint-item"><div class="tap-hint-arrow">👇</div><div class="tap-hint-label">Tap lower half<br>to move down</div></div>
+        </div>
+        <div class="prerunner-countdown" id="prerunner-count-3">Starting in 3...</div>
+      </div>
+      <div class="flash-overlay" id="flash-overlay-3">
+        <div class="flash-tag">🔬 GMT Power Unlocked</div>
+        <div class="flash-main">Your gut — at full<br>capacity 🌿</div>
+        <div class="flash-sub">This is what knowing your microbiome feels like. Every hidden pathway — visible. Every prebiotic — captured.</div>
+      </div>
+      <div class="summary-overlay" id="summary-overlay-3">
+        <div class="summary-label-top">Level 3 Complete — 4pm Gut</div>
+        <div class="summary-score" id="summary-score-3">0</div>
+        <div class="summary-of">prebiotic particles captured out of 40</div>
+        <div class="summary-bar-wrap"><div class="summary-bar-fill" id="summary-bar-3"></div></div>
+        <div class="summary-msg" id="summary-msg-3"></div>
+        <div class="summary-hint">💡 Your gut at full capacity — this is what knowing your microbiome feels like.</div>
+        <button class="btn-primary" id="summary-next-btn-3" style="max-width:280px;">Final Choice →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DINNER CHOICE -->
+  <div id="screen-dinner" class="screen">
+    <div class="header">
+      <button class="back-btn" id="back-to-afternoon">← Back</button>
+      <div class="pill">Evening · 4 of 4</div>
+      <button class="mute-btn">🔊</button>
+    </div>
+    <div style="padding:22px 22px 36px;flex:1;background:linear-gradient(180deg, #FAF8F5 60%, #1B2B4B);">
+      <div class="time-stamp" style="color:#E91E8C;">🌙 8:00 PM</div>
+      <h2 class="serif" style="font-size:30px;color:var(--navy);line-height:1.2;margin-bottom:8px;font-weight:600;">Day's done.<br>Last fuel for your gut <em style="color:var(--pink);">until tomorrow.</em></h2>
+      <p style="font-size:13px;color:#888;line-height:1.65;margin-bottom:22px;">What does your gut actually get for dinner?</p>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;" id="dinner-options"></div>
+      <button class="btn-primary" id="btn-dinner-next" disabled>See My Gut Persona 🎴</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="js/state.js"></script>
+<script src="js/constants.js"></script>
+<script src="js/scoring.js"></script>
+<script src="js/runner.js"></script>
+<script>
+const state = GS.get();
+if (!state.name) window.location.href = 'index.html';
+
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => {
+    if (s.classList.contains('active')) { s.classList.remove('active'); s.classList.add('exit'); setTimeout(() => s.classList.remove('exit'), 400); }
+  });
+  setTimeout(() => { const el = document.getElementById('screen-' + id); if (el) el.classList.add('active'); }, 60);
+}
+
+document.getElementById('morning-name').textContent = GS.val('name', 'Your') + "'s";
+document.getElementById('back-to-morning').addEventListener('click', () => goTo('morning'));
+document.getElementById('back-to-lunch').addEventListener('click', () => goTo('lunch'));
+document.getElementById('back-to-afternoon').addEventListener('click', () => goTo('afternoon'));
+
+function buildChoiceOptions(containerId, choiceKey, btnId, saveKey, scoreKey, nextFn) {
+  const container = document.getElementById(containerId);
+  const choices = CHOICES[choiceKey];
+  Object.entries(choices).forEach(([key, val]) => {
+    const div = document.createElement('div');
+    div.className = 'option-card';
+    div.innerHTML = `<span class="option-emoji">${val.emoji}</span><div style="flex:1;padding-right:28px;"><div class="option-title">${val.label}</div><div class="option-sub">${val.sub}</div></div><div class="option-check">✓</div>`;
+    div.addEventListener('click', () => {
+      container.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+      div.classList.add('selected');
+      GS.save({ [saveKey]: key, [scoreKey]: val.score });
+      document.getElementById(btnId).disabled = false;
+    });
+    container.appendChild(div);
+  });
+  document.getElementById(btnId).addEventListener('click', nextFn);
+}
+
+buildChoiceOptions('morning-options', 'morning', 'btn-morning-next', 'choice_morning', 'morning_score', () => {
+  startPreRunner(() => {
+    const r1cfg = { ...RUNNER_CONFIG.level1, canvasId: 'runner-canvas', timerId: 'timer-bar', countId: 'orb-count-display', flashId: 'flash-overlay', summaryId: 'summary-overlay', preId: 'prerunner-overlay', preCountId: 'prerunner-count' };
+    runLevel('runner1', r1cfg, RUNNER_CONFIG.level1, 1, 20, () => goTo('lunch'));
+  });
+  goTo('runner1');
+});
+
+function buildLunchSections() {
+  const container = document.getElementById('lunch-sections');
+  const sections = [
+    { key: 'base',    label: 'Base 🍚',       saveKey: 'lunch_base'    },
+    { key: 'protein', label: 'Protein 💪',     saveKey: 'lunch_protein' },
+    { key: 'veg',     label: 'Vegetables 🥗',  saveKey: 'lunch_veg'     },
+    { key: 'side',    label: 'Side 🥛',        saveKey: 'lunch_side'    }
+  ];
+  const lunchState = { base: null, protein: null, veg: null, side: null };
+
+  sections.forEach(sec => {
+    const wrap = document.createElement('div'); wrap.className = 'plate-section';
+    const label = document.createElement('div'); label.className = 'plate-section-label'; label.textContent = sec.label;
+    const opts = document.createElement('div'); opts.className = 'plate-options';
+    const items = CHOICES.lunch[sec.key];
+    Object.entries(items).forEach(([key, val]) => {
+      const chip = document.createElement('div'); chip.className = 'plate-chip';
+      chip.textContent = val.emoji + ' ' + val.label;
+      chip.addEventListener('click', () => {
+        opts.querySelectorAll('.plate-chip').forEach(c => c.classList.remove('selected'));
+        chip.classList.add('selected');
+        lunchState[sec.key] = key;
+        GS.save({ [sec.saveKey]: key });
+        const allSelected = Object.values(lunchState).every(v => v !== null);
+        document.getElementById('btn-lunch-next').disabled = !allSelected;
+      });
+      opts.appendChild(chip);
+    });
+    wrap.appendChild(label); wrap.appendChild(opts); container.appendChild(wrap);
+  });
+
+  document.getElementById('btn-lunch-next').addEventListener('click', () => {
+    const s = GS.get();
+    const lunchScore = calcLunchScore(s);
+    GS.save({ lunch_score: lunchScore });
+    startPreRunner2(() => {
+      runLevel('runner2', { canvasId: 'runner-canvas-2', timerId: 'timer-bar-2', countId: 'orb-count-display-2', flashId: 'flash-overlay-2', summaryId: 'summary-overlay-2' }, RUNNER_CONFIG.level2, 2, 30, () => goTo('afternoon'));
+    });
+    goTo('runner2');
+  });
+}
+buildLunchSections();
+
+buildChoiceOptions('afternoon-options', 'afternoon', 'btn-afternoon-next', 'choice_afternoon', 'afternoon_score', () => {
+  startPreRunner3(() => {
+    runLevel('runner3', { canvasId: 'runner-canvas-3', timerId: 'timer-bar-3', countId: 'orb-count-display-3', flashId: 'flash-overlay-3', summaryId: 'summary-overlay-3' }, RUNNER_CONFIG.level3, 3, 40, () => goTo('dinner'));
+  });
+  goTo('runner3');
+});
+
+buildChoiceOptions('dinner-options', 'dinner', 'btn-dinner-next', 'choice_dinner', 'dinner_score', () => {
+  const s = GS.get();
+  const result = calcPersona(s);
+  GS.save(result);
+  window.location.href = 'results.html';
+});
+
+function runLevel(screenId, ids, config, levelNum, total, nextFn) {
+  const canvas = document.getElementById(ids.canvasId || 'runner-canvas');
+  const container = canvas.parentElement;
+  canvas.width = container.offsetWidth || 375;
+  canvas.height = container.offsetHeight || 300;
+
+  const customConfig = {
+    ...config,
+    flashTime: config.flashTime
+  };
+
+  const overrides = {
+    orbCountEl: document.getElementById(ids.countId || 'orb-count-display'),
+    timerEl: document.getElementById(ids.timerId || 'timer-bar'),
+    flashEl: document.getElementById(ids.flashId || 'flash-overlay'),
+    total
+  };
+
+  initRunnerCustom(canvas, customConfig, overrides, (collected) => {
+    GS.save({ ['runner' + levelNum + '_collected']: collected });
+    const summaryEl = document.getElementById(ids.summaryId || 'summary-overlay');
+    const scoreEl = summaryEl.querySelector('.summary-score') || document.getElementById('summary-score');
+    const barEl = summaryEl.querySelector('.summary-bar-fill') || document.getElementById('summary-bar');
+    const msgEl = summaryEl.querySelector('.summary-msg') || document.getElementById('summary-msg');
+    summaryEl.classList.add('visible');
+    let n = 0;
+    const iv = setInterval(() => { n = Math.min(n+1, collected); if(scoreEl) scoreEl.textContent = n; if(n>=collected) clearInterval(iv); }, 40);
+    setTimeout(() => { if(barEl) barEl.style.width = Math.round((collected/total)*100)+'%'; }, 400);
+    const pct = Math.round((collected/total)*100);
+    if (msgEl) {
+      if (pct < 35) msgEl.textContent = 'On your current diet, your gut is missing most of what it needs.';
+      else if (pct < 60) msgEl.textContent = 'Your gut is picking up some prebiotics — but still leaving a lot on the table.';
+      else msgEl.textContent = 'Not bad! Your gut is capturing more than most. A GMT could unlock the rest.';
+    }
+    const nextBtn = summaryEl.querySelector('button') || document.getElementById('summary-next-btn');
+    if (nextBtn) nextBtn.onclick = nextFn;
+  });
+}
+
+function initRunnerCustom(canvas, config, overrides, onComplete) {
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const { speed, totalOrbs, spawnInterval, duration, bgColor, flashTime } = config;
+  const { orbCountEl, timerEl, flashEl, total } = overrides;
+  const ZONES = [H*0.22, H*0.5, H*0.78];
+  let runnerZone=1, runnerY=ZONES[1], targetY=ZONES[1], autoReturnTimer=null;
+  let collected=0, collectedIds=new Set(), orbsSpawned=0, orbs=[], popups=[];
+  let lastSpawn=null, flashShown=false, flashDone=false, gameEnded=false, startTime=null, rafId=null;
+  const RUNNER_EMOJI = GS.val('avatar','male')==='female'?'🚶‍♀️':'🚶';
+  const RUNNER_X=W*0.13;
+
+  function tap(cy) {
+    if(gameEnded) return;
+    const rect=canvas.getBoundingClientRect(), y=cy-rect.top;
+    if(y<H/2) runnerZone=Math.max(0,runnerZone-1); else runnerZone=Math.min(2,runnerZone+1);
+    targetY=ZONES[runnerZone];
+    if(autoReturnTimer) clearTimeout(autoReturnTimer);
+    autoReturnTimer=setTimeout(()=>{runnerZone=1;targetY=ZONES[1];},1100);
+  }
+  canvas.addEventListener('click', e=>tap(e.clientY));
+  canvas.addEventListener('touchstart', e=>{e.preventDefault();tap(e.touches[0].clientY);},{passive:false});
+
+  function frame(now) {
+    if(!startTime){startTime=now;lastSpawn=now;}
+    if(gameEnded) return;
+    const elapsed=now-startTime, progress=Math.min(elapsed/duration,1);
+    ctx.clearRect(0,0,W,H); ctx.fillStyle=bgColor; ctx.fillRect(0,0,W,H);
+    for(let i=0;i<3;i++){const a=0.05+0.03*Math.sin(elapsed*0.0008+i*2);ctx.strokeStyle=`rgba(76,175,80,${a})`;ctx.lineWidth=1;ctx.setLineDash([6,14]);ctx.beginPath();ctx.moveTo(0,ZONES[i]);ctx.lineTo(W,ZONES[i]);ctx.stroke();}
+    ctx.setLineDash([]);
+    if(now-lastSpawn>spawnInterval&&orbsSpawned<totalOrbs){const zone=Math.floor(Math.random()*3),id='o_'+Date.now()+'_'+Math.random().toString(36).substr(2,5);orbs.push({id,x:W+18,y:ZONES[zone],done:false});orbsSpawned++;lastSpawn=now;}
+    runnerY+=(targetY-runnerY)*0.1;
+    orbs=orbs.filter(orb=>{
+      if(orb.done) return false;
+      orb.x-=speed/60;
+      const dx=(RUNNER_X+14)-orb.x,dy=runnerY-orb.y;
+      if(Math.sqrt(dx*dx+dy*dy)<22&&!collectedIds.has(orb.id)){
+        collectedIds.add(orb.id);collected++;
+        if(orbCountEl) orbCountEl.textContent='⚡ '+collected+' / '+total;
+        popups.push({x:orb.x,y:orb.y-18,text:'+1 Prebiotic 🌿',color:'#81C784',age:0,life:45});
+        orb.done=true;return false;
+      }
+      if(orb.x<-32){if(!collectedIds.has(orb.id))popups.push({x:16,y:orb.y,text:'missed',color:'rgba(255,255,255,0.25)',age:0,life:40});return false;}
+      const pulse=1+0.07*Math.sin(elapsed*0.007+orb.x*0.08);
+      ctx.fillStyle='#4CAF50';ctx.globalAlpha=0.88;ctx.beginPath();ctx.arc(orb.x,orb.y,15*pulse,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='rgba(129,199,132,0.3)';ctx.lineWidth=4;ctx.beginPath();ctx.arc(orb.x,orb.y,15*pulse+5,0,Math.PI*2);ctx.stroke();
+      ctx.fillStyle='white';ctx.globalAlpha=1;ctx.font='bold 10px DM Sans,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('P',orb.x,orb.y+0.5);
+      return true;
+    });
+    ctx.globalAlpha=1;ctx.textAlign='left';ctx.font='26px serif';ctx.textBaseline='middle';ctx.fillText(RUNNER_EMOJI,RUNNER_X-2,runnerY);
+    popups=popups.filter(p=>{p.age++;ctx.globalAlpha=Math.max(0,1-p.age/p.life);ctx.font='500 11px DM Sans,sans-serif';ctx.fillStyle=p.color;ctx.textAlign='center';ctx.fillText(p.text,p.x,p.y-p.age*0.45);ctx.globalAlpha=1;return p.age<p.life;});
+    ctx.textAlign='left';ctx.font='10px DM Sans,sans-serif';ctx.fillStyle='rgba(255,255,255,0.18)';ctx.textAlign='right';ctx.fillText('tap upper / lower half to move',W-10,H-10);ctx.textAlign='left';
+    if(timerEl) timerEl.style.width=Math.round((1-progress)*100)+'%';
+    if(elapsed>=flashTime&&!flashShown&&!flashDone){flashShown=true;if(flashEl)flashEl.classList.add('visible');setTimeout(()=>{if(flashEl)flashEl.classList.remove('visible');flashDone=true;flashShown=false;},2800);}
+    if(progress>=1){gameEnded=true;cancelAnimationFrame(rafId);if(onComplete)onComplete(collected);return;}
+    rafId=requestAnimationFrame(frame);
+  }
+  rafId=requestAnimationFrame(frame);
+}
+
+function makePreRunnerFn(overlayId, countId, runFn) {
+  return function() {
+    let count=3;
+    const overlay=document.getElementById(overlayId), countEl=document.getElementById(countId);
+    if(overlay) overlay.classList.add('visible');
+    setTimeout(()=>{
+      const iv=setInterval(()=>{
+        count--;
+        if(count>0){if(countEl)countEl.textContent='Starting in '+count+'...';}
+        else{clearInterval(iv);if(overlay)overlay.classList.remove('visible');setTimeout(runFn,350);}
+      },1000);
+    },300);
+  };
+}
+
+const startPreRunner = makePreRunnerFn('prerunner-overlay','prerunner-count', () => {});
+const startPreRunner2 = makePreRunnerFn('prerunner-overlay-2','prerunner-count-2', () => {});
+const startPreRunner3 = makePreRunnerFn('prerunner-overlay-3','prerunner-count-3', () => {});
+</script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#FAF8F5">
+<title>A Day in Your Gut — iom Bioworks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="gut-app">
+
+  <!-- SCREEN 1: LANDING -->
+  <div id="screen-landing" class="screen active">
+    <div class="particle-bg" id="particles"></div>
+    <div style="padding:20px;display:flex;justify-content:center;position:relative;z-index:2;flex-shrink:0;">
+      <div class="logo-text">iom Bioworks</div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 28px 40px;text-align:center;position:relative;z-index:2;">
+      <div style="font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--pink);margin-bottom:12px;">A Day in Your Gut</div>
+      <h1 class="serif" style="font-size:52px;color:var(--navy);line-height:1.05;margin-bottom:18px;font-weight:600;">Your gut<br>has a <em style="color:var(--pink);">story</em></h1>
+      <p style="font-size:14px;color:var(--muted);line-height:1.75;margin-bottom:36px;max-width:290px;">See how your daily choices shape your microbiome — hour by hour</p>
+      <div class="landing-icons">
+        <div class="landing-icon-item"><span class="landing-icon-emoji">🌅</span><div class="landing-icon-label">Your<br>Morning</div></div>
+        <div class="landing-icon-item"><span class="landing-icon-emoji">🏃</span><div class="landing-icon-label">Run<br>The Gut</div></div>
+        <div class="landing-icon-item"><span class="landing-icon-emoji">🎴</span><div class="landing-icon-label">Your<br>Persona</div></div>
+      </div>
+      <button class="btn-primary" id="start-btn" style="max-width:320px;">Start Your Journey 🚀</button>
+      <p style="font-size:11px;color:#C8C3BA;margin-top:14px;">Takes ~3 minutes · No sign-up needed</p>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: PERSONALISE -->
+  <div id="screen-personalise" class="screen">
+    <div class="header">
+      <button class="back-btn" id="back-to-landing">← Back</button>
+      <div class="logo-text">iom Bioworks</div>
+      <div style="width:48px;"></div>
+    </div>
+    <div style="padding:28px 22px 36px;flex:1;">
+      <div class="time-stamp" style="margin-bottom:10px;">Let's trace your gut day</div>
+      <h2 class="serif" style="font-size:34px;color:var(--navy);line-height:1.15;margin-bottom:8px;font-weight:600;">What should<br>we call you?</h2>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.6;">Your journey adapts to your choices</p>
+      <input class="name-input" type="text" id="name-input" placeholder="Your name" maxlength="20" autocomplete="off" autocorrect="off" />
+      <p style="font-size:13px;font-weight:500;color:var(--navy);margin:28px 0 14px;">Choose your gut explorer</p>
+      <div style="display:flex;gap:14px;margin-bottom:36px;">
+        <div class="avatar-card" id="av-male"><span class="avatar-emoji">🚶</span><div class="avatar-label">Explorer</div></div>
+        <div class="avatar-card" id="av-female"><span class="avatar-emoji">🚶‍♀️</span><div class="avatar-label">Explorer</div></div>
+      </div>
+      <button class="btn-primary" id="btn-go" disabled>Let's Go 🚀</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: HEALTH GOAL -->
+  <div id="screen-goal" class="screen">
+    <div class="header">
+      <button class="back-btn" id="back-to-personalise">← Back</button>
+      <div class="pill">Gut Goal</div>
+      <button class="mute-btn" id="mute-btn">🔊</button>
+    </div>
+    <div style="padding:24px 22px 36px;flex:1;">
+      <div class="time-stamp">Your gut goal</div>
+      <h2 class="serif" style="font-size:32px;color:var(--navy);line-height:1.2;margin-bottom:8px;font-weight:600;"><span id="goal-name">Hey</span>, what does<br>your gut <em style="color:var(--pink);">want most?</em></h2>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.6;">Choose one — your journey adapts to it</p>
+      <div style="display:flex;flex-direction:column;gap:11px;margin-bottom:28px;">
+        <div class="option-card" data-goal="mood"><span class="option-emoji">🧠</span><div style="flex:1;padding-right:28px;"><div class="option-title">Better Mood</div><div class="option-sub">Your gut makes 90% of your serotonin. Let's fix the source.</div></div><div class="option-check">✓</div></div>
+        <div class="option-card" data-goal="immunity"><span class="option-emoji">🛡️</span><div style="flex:1;padding-right:28px;"><div class="option-title">Stronger Immunity</div><div class="option-sub">70% of your immune system lives in your gut. Feed it right.</div></div><div class="option-check">✓</div></div>
+        <div class="option-card" data-goal="energy"><span class="option-emoji">⚡</span><div style="flex:1;padding-right:28px;"><div class="option-title">More Energy</div><div class="option-sub">Your gut bacteria fuel every cell. Let's power you up.</div></div><div class="option-check">✓</div></div>
+      </div>
+      <button class="btn-primary" id="btn-goal-next" disabled>Next →</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="js/state.js"></script>
+<script src="js/constants.js"></script>
+<script>
+  GS.clear();
+
+  function goTo(id) {
+    document.querySelectorAll('.screen').forEach(s => {
+      if (s.classList.contains('active')) { s.classList.remove('active'); s.classList.add('exit'); setTimeout(() => s.classList.remove('exit'), 400); }
+    });
+    setTimeout(() => document.getElementById('screen-' + id).classList.add('active'), 60);
+  }
+
+  document.getElementById('start-btn').addEventListener('click', () => goTo('personalise'));
+  document.getElementById('back-to-landing').addEventListener('click', () => goTo('landing'));
+  document.getElementById('back-to-personalise').addEventListener('click', () => goTo('personalise'));
+
+  let avatar = null;
+  document.getElementById('av-male').addEventListener('click', () => { avatar = 'male'; document.getElementById('av-male').classList.add('selected'); document.getElementById('av-female').classList.remove('selected'); check(); });
+  document.getElementById('av-female').addEventListener('click', () => { avatar = 'female'; document.getElementById('av-female').classList.add('selected'); document.getElementById('av-male').classList.remove('selected'); check(); });
+
+  document.getElementById('name-input').addEventListener('input', check);
+
+  function check() {
+    const name = document.getElementById('name-input').value.trim();
+    document.getElementById('btn-go').disabled = !(name.length > 0 && avatar);
+  }
+
+  document.getElementById('btn-go').addEventListener('click', () => {
+    const name = document.getElementById('name-input').value.trim();
+    GS.save({ name, avatar });
+    document.getElementById('goal-name').textContent = name;
+    goTo('goal');
+  });
+
+  let goal = null;
+  document.querySelectorAll('[data-goal]').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('[data-goal]').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      goal = card.dataset.goal;
+      document.getElementById('btn-goal-next').disabled = false;
+    });
+  });
+
+  document.getElementById('btn-goal-next').addEventListener('click', () => {
+    GS.save({ goal });
+    window.location.href = 'game.html';
+  });
+
+  let muted = false;
+  document.getElementById('mute-btn').addEventListener('click', () => { muted = !muted; document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊'; });
+
+  const pBg = document.getElementById('particles');
+  const pColors = ['#E91E8C','#4CAF50','#1B2B4B'];
+  for (let i = 0; i < 22; i++) {
+    const d = document.createElement('div'); d.className = 'particle';
+    const size = 6 + Math.random() * 32;
+    d.style.cssText = `width:${size}px;height:${size}px;background:${pColors[Math.floor(Math.random()*3)]};left:${Math.random()*100}%;top:${Math.random()*100}%;animation-duration:${8+Math.random()*12}s;animation-delay:${-Math.random()*12}s;`;
+    pBg.appendChild(d);
+  }
+</script>
+</body>
+</html>
