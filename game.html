@@ -232,10 +232,71 @@ function buildChoiceOptions(containerId, choiceKey, btnId, saveKey, scoreKey, ne
   document.getElementById(btnId).addEventListener('click', nextFn);
 }
 
-/* ─── HELPER: build lunch plate sections ─── */
+/* ─── HELPER: build lunch plate sections with visual plate ─── */
 function buildLunchSections() {
   const container = document.getElementById('lunch-sections');
   if (!container) return;
+
+  /* Emoji that appears on the plate per zone */
+  const plateEmojis = {
+    base:    { A:'🍚', B:'🫓', C:'🌾', D:'' },
+    protein: { A:'🫕', B:'🫘', C:'🧀', D:'🥚', E:'' },
+    veg:     { A:'🥬', B:'🥦', C:'🥗', D:'' },
+    side:    { A:'🥛', B:'🌶️', C:'🥤', D:'' }
+  };
+
+  /* Plate visual */
+  const plateWrap = document.createElement('div');
+  plateWrap.style.cssText = 'display:flex;justify-content:center;margin-bottom:16px;';
+  plateWrap.innerHTML = `
+    <div id="plate-visual" style="
+      width:160px;height:160px;border-radius:50%;
+      background:white;border:3px solid #EDE9E3;
+      position:relative;display:flex;align-items:center;
+      justify-content:center;flex-shrink:0;
+      box-shadow:0 4px 20px rgba(27,43,75,0.1);
+      transition:all 0.3s ease;">
+      <div id="plate-items" style="
+        width:120px;height:120px;border-radius:50%;
+        background:#FAF8F5;border:2px dashed #EDE9E3;
+        display:grid;grid-template-columns:1fr 1fr;
+        grid-template-rows:1fr 1fr;
+        place-items:center;font-size:28px;
+        transition:all 0.3s ease;">
+        <span id="p-base"    style="opacity:0.2;font-size:20px;">🍽️</span>
+        <span id="p-protein" style="opacity:0.2;font-size:20px;">🍽️</span>
+        <span id="p-veg"     style="opacity:0.2;font-size:20px;">🍽️</span>
+        <span id="p-side"    style="opacity:0.2;font-size:20px;">🍽️</span>
+      </div>
+      <div id="plate-ring" style="
+        position:absolute;inset:-3px;border-radius:50%;
+        border:3px solid var(--border);
+        pointer-events:none;transition:border-color 0.4s;">
+      </div>
+    </div>`;
+  container.appendChild(plateWrap);
+
+  function updatePlate(zone, emoji) {
+    const el = document.getElementById('p-' + zone);
+    if (!el) return;
+    if (emoji) {
+      el.textContent = emoji;
+      el.style.opacity = '1';
+      el.style.transform = 'scale(1.2)';
+      setTimeout(() => { el.style.transform = 'scale(1)'; }, 200);
+    } else {
+      el.textContent = '🍽️';
+      el.style.opacity = '0.2';
+    }
+    /* Check if plate is full — glow the ring */
+    const allFilled = ['base','protein','veg','side'].every(z => {
+      const sp = document.getElementById('p-' + z);
+      return sp && sp.style.opacity === '1';
+    });
+    const ring = document.getElementById('plate-ring');
+    if (ring) ring.style.borderColor = allFilled ? 'var(--pink)' : 'var(--border)';
+  }
+
   const sections = [
     { key: 'base',    label: 'Base 🍚',      saveKey: 'lunch_base'    },
     { key: 'protein', label: 'Protein 💪',    saveKey: 'lunch_protein' },
@@ -256,6 +317,9 @@ function buildLunchSections() {
         chip.classList.add('selected');
         lunchState[sec.key] = key;
         GS.save({ [sec.saveKey]: key });
+        /* Update plate visual */
+        const emoji = plateEmojis[sec.key][key] || '';
+        updatePlate(sec.key, emoji);
         document.getElementById('btn-lunch-next').disabled =
           !Object.values(lunchState).every(v => v !== null);
       });
