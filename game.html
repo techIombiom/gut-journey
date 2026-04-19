@@ -49,9 +49,9 @@
         <div class="prerunner-countdown" id="prerunner-count">Starting in 3...</div>
       </div>
       <div class="flash-overlay" id="flash-overlay">
-        <div class="flash-tag">🔬 Gut Microbiome Test</div>
+        <div class="flash-tag">🔬 Gut Test Power-Up</div>
         <div class="flash-main">This is your gut —<br>fully optimised</div>
-        <div class="flash-sub">A GMT reveals hidden prebiotic pathways your gut can't find alone.</div>
+        <div class="flash-sub">A A Gut Test reveals hidden prebiotic pathways your gut can't find alone.</div>
       </div>
       <div class="summary-overlay" id="summary-overlay">
         <div class="summary-label-top">Level 1 Complete — 6am Gut</div>
@@ -59,7 +59,7 @@
         <div class="summary-of">prebiotic particles captured out of 20</div>
         <div class="summary-bar-wrap"><div class="summary-bar-fill" id="summary-bar"></div></div>
         <div class="summary-msg" id="summary-msg"></div>
-        <div class="summary-hint">💡 Diet changes can double this. A GMT can unlock even more hidden pathways.</div>
+        <div class="summary-hint">💡 Diet changes can double this. A Gut Test can unlock even more hidden pathways.</div>
         <button class="btn-primary" id="summary-next-btn" style="max-width:280px;">Continue →</button>
       </div>
     </div>
@@ -103,9 +103,9 @@
         <div class="prerunner-countdown" id="prerunner-count-2">Starting in 3...</div>
       </div>
       <div class="flash-overlay" id="flash-overlay-2">
-        <div class="flash-tag">🔬 Gut Microbiome Test</div>
+        <div class="flash-tag">🔬 Gut Test Power-Up</div>
         <div class="flash-main">Imagine what the right<br>fuel could do 🌿</div>
-        <div class="flash-sub">Better data = better absorption. A GMT shows you exactly where your gut is leaving nutrients uncaptured.</div>
+        <div class="flash-sub">Better data = better absorption. A Gut Test shows you exactly where your gut is leaving nutrients uncaptured.</div>
       </div>
       <div class="summary-overlay" id="summary-overlay-2">
         <div class="summary-label-top">Level 2 Complete — 1pm Gut</div>
@@ -113,7 +113,7 @@
         <div class="summary-of">prebiotic particles captured out of 30</div>
         <div class="summary-bar-wrap"><div class="summary-bar-fill" id="summary-bar-2"></div></div>
         <div class="summary-msg" id="summary-msg-2"></div>
-        <div class="summary-hint">💡 This is where a GMT changes everything — it reveals the hidden pathways →</div>
+        <div class="summary-hint">💡 This is where a Gut Test changes everything — it reveals the hidden pathways →</div>
         <button class="btn-primary" id="summary-next-btn-2" style="max-width:280px;">Continue →</button>
       </div>
     </div>
@@ -148,8 +148,8 @@
       <canvas id="runner-canvas-3"></canvas>
       <div class="prerunner-overlay visible" id="prerunner-overlay-3">
         <div class="prerunner-icon">🔬</div>
-        <div class="prerunner-title">What a GMT unlocks</div>
-        <div class="prerunner-body">A Gut Microbiome Test reveals hidden prebiotic pathways your gut can't find alone. Watch what happens when the map is complete.</div>
+        <div class="prerunner-title">What a Gut Test unlocks</div>
+        <div class="prerunner-body">A Gut Test reveals hidden prebiotic pathways your gut can't find alone. Watch what happens when the map is complete.</div>
         <div class="tap-hint">
           <div class="tap-hint-item"><div class="tap-hint-arrow">👆</div><div class="tap-hint-label">Tap upper half<br>to move up</div></div>
           <div class="tap-hint-item"><div class="tap-hint-arrow">👇</div><div class="tap-hint-label">Tap lower half<br>to move down</div></div>
@@ -157,7 +157,7 @@
         <div class="prerunner-countdown" id="prerunner-count-3">Starting in 3...</div>
       </div>
       <div class="flash-overlay" id="flash-overlay-3">
-        <div class="flash-tag">🔬 GMT Power Unlocked</div>
+        <div class="flash-tag">🔬 Gut Test Power-Up</div>
         <div class="flash-main">Your gut — at full<br>capacity 🌿</div>
         <div class="flash-sub">This is what knowing your microbiome feels like. Every hidden pathway — visible. Every prebiotic — captured.</div>
       </div>
@@ -428,7 +428,7 @@ function runLevel(canvasId, timerId, countId, flashId, summaryId,
     const timerEl = document.getElementById(timerId);
     if (timerEl) timerEl.style.width = Math.round((1 - progress) * 100) + '%';
 
-    // GMT flash
+    // Gut Test flash
     if (elapsed >= flashTime && !flashShown && !flashDone) {
       flashShown = true;
       const fo = document.getElementById(flashId);
@@ -457,7 +457,7 @@ function showLevelSummary(collected, total, levelNum, summaryId, scoreElId, barE
   if (!overlay) return;
   overlay.classList.add('visible');
 
-  GS.save({ ['runner' + levelNum + '_collected']: collected });
+  GS.save({ ['runner' + levelNum + '_collected']: collected, levels_reached: levelNum });
 
   // count-up animation
   let n = 0;
@@ -478,7 +478,7 @@ function showLevelSummary(collected, total, levelNum, summaryId, scoreElId, barE
   if (msgEl) {
     if (pct < 35)      msgEl.textContent = 'On your current diet, your gut is missing most of what it needs.';
     else if (pct < 60) msgEl.textContent = 'Your gut is picking up some prebiotics — but still leaving a lot on the table.';
-    else               msgEl.textContent = 'Not bad! Your gut is capturing more than most. A GMT could unlock the rest.';
+    else               msgEl.textContent = 'Not bad! Your gut is capturing more than most. A Gut Test could unlock the rest.';
   }
 
   const nextBtn = document.getElementById(nextBtnId);
