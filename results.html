@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
   #screen-level4 { background: #0d1f3c; min-height: 100vh; }
   .l4-text { font-family:'Cormorant Garamond',serif; color:white; text-align:center; font-style:italic; }
@@ -17,7 +18,6 @@
   }
   .card-reveal { animation: cardReveal 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards; }
 
-  /* Level 4 runner fills full remaining height */
   #screen-level4.active {
     display: flex;
     flex-direction: column;
@@ -35,6 +35,18 @@
     height: 100%;
     touch-action: none;
   }
+
+  .share-loading {
+    display: inline-block;
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
@@ -53,13 +65,13 @@
     </div>
     <div id="l4-canvas-wrap">
       <canvas id="l4-canvas"></canvas>
-      <div id="l4-text-overlay" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:32px 24px;pointer-events:none;z-index:3;text-align:center;">
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:32px 24px;pointer-events:none;z-index:3;text-align:center;">
         <div id="l4-msg" class="l4-text" style="font-size:24px;opacity:0;transition:opacity 0.8s;max-width:280px;line-height:1.3;"></div>
       </div>
     </div>
   </div>
 
-  <!-- PERSONA CARD -->
+  <!-- PERSONA CARD SCREEN -->
   <div id="screen-card" class="screen" style="background:var(--navy);overflow-y:auto;">
     <div style="padding:18px 20px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
       <div class="logo-text" style="color:rgba(255,255,255,0.5);">iom Bioworks</div>
@@ -93,9 +105,9 @@
 const s = GS.get();
 if (!s.name || !s.personaKey) window.location.href = 'index.html';
 
-/* ── Save level 4 reached ── */
 GS.save({ levels_reached: 4 });
 
+/* ── Utilities ── */
 function goTo(id) {
   document.querySelectorAll('.screen').forEach(sc => {
     if (sc.classList.contains('active')) {
@@ -110,24 +122,23 @@ function goTo(id) {
   }, 60);
 }
 
-function showToast(msg) {
+function showToast(msg, duration) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('visible');
-  setTimeout(() => t.classList.remove('visible'), 3200);
+  setTimeout(() => t.classList.remove('visible'), duration || 3200);
 }
 
 function restartGame() { GS.clear(); window.location.href = 'index.html'; }
 
 /* ════════════════════════════════════════
-   LEVEL 4 CINEMATIC — auto-play, no input
+   LEVEL 4 CINEMATIC
    ════════════════════════════════════════ */
 (function runL4() {
   const canvas = document.getElementById('l4-canvas');
   const wrap   = document.getElementById('l4-canvas-wrap');
   const appEl  = document.getElementById('gut-app');
 
-  /* Size canvas after a brief paint delay so layout is settled */
   function sizeCanvas() {
     const W = wrap.offsetWidth  || appEl.offsetWidth  || 375;
     const H = wrap.offsetHeight || (appEl.offsetHeight - 65) || 400;
@@ -136,24 +147,22 @@ function restartGame() { GS.clear(); window.location.href = 'index.html'; }
     return { W: canvas.width, H: canvas.height };
   }
 
-  /* Small delay to ensure the screen is painted before we read heights */
   setTimeout(function startCinematic() {
     const { W, H } = sizeCanvas();
-    const ctx    = canvas.getContext('2d');
-    const TOTAL  = 50;
+    const ctx      = canvas.getContext('2d');
+    const TOTAL    = 50;
     const DURATION = 10000;
-    const ZONES  = [H * 0.22, H * 0.5, H * 0.78];
+    const ZONES    = [H * 0.22, H * 0.5, H * 0.78];
 
     let collected = 0, orbs = [], popups = [];
     let orbsSpawned = 0, lastSpawn = null, startTime = null, rafId = null;
 
     const RUNNER_X     = W * 0.13;
     const RUNNER_EMOJI = GS.val('avatar', 'male') === 'female' ? '🚶‍♀️' : '🚶';
-
     const msgs = [
       { time: 2000, text: 'This is your gut — fully optimised' },
       { time: 5000, text: 'Gut Test + Prebiotics.\nNothing left uncaptured.' },
-      { time: 8000, text: s.name + ', meet your\nGut Persona 🎴' }
+      { time: 8000, text: (s.name || 'You') + ', meet your\nGut Persona 🎴' }
     ];
     const msgShown = [];
 
@@ -163,57 +172,45 @@ function restartGame() { GS.clear(); window.location.href = 'index.html'; }
       const progress = Math.min(elapsed / DURATION, 1);
 
       ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = '#0a1528'; ctx.fillRect(0, 0, W, H);
 
-      /* Background — deep green particle field */
-      ctx.fillStyle = '#0a1528';
-      ctx.fillRect(0, 0, W, H);
       for (let i = 0; i < W; i += 4) {
         const a = 0.04 + 0.03 * Math.sin(i * 0.05 + elapsed * 0.002);
-        ctx.fillStyle = `rgba(76,175,80,${a})`;
-        ctx.fillRect(i, 0, 2, H);
+        ctx.fillStyle = `rgba(76,175,80,${a})`; ctx.fillRect(i, 0, 2, H);
       }
 
-      /* Spawn gold orbs rapidly */
       if (now - lastSpawn > 200 && orbsSpawned < TOTAL) {
         const zone = Math.floor(Math.random() * 3);
         orbs.push({ x: W + 10, y: ZONES[zone] });
         orbsSpawned++; lastSpawn = now;
       }
 
-      /* Runner auto-weaves between zones */
       const runnerY = ZONES[1] + (H * 0.2) * Math.sin(elapsed * 0.003);
 
-      /* Update & draw orbs */
       orbs = orbs.filter(orb => {
         orb.x -= 200 / 60;
-        const dx = (RUNNER_X + 14) - orb.x;
-        const dy = runnerY - orb.y;
-        if (Math.sqrt(dx * dx + dy * dy) < 26) {
+        const dx = (RUNNER_X + 14) - orb.x, dy = runnerY - orb.y;
+        if (Math.sqrt(dx*dx + dy*dy) < 26) {
           collected++;
           document.getElementById('l4-orb-count').textContent = '⚡ ' + collected + ' / 50';
           popups.push({ x: orb.x, y: orb.y - 16, text: '✨', age: 0, life: 30 });
           return false;
         }
         if (orb.x < -20) return false;
-
-        /* Gold orb */
         ctx.fillStyle = '#FFD700'; ctx.globalAlpha = 0.92;
-        ctx.beginPath(); ctx.arc(orb.x, orb.y, 12, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(orb.x, orb.y, 12, 0, Math.PI*2); ctx.fill();
         ctx.strokeStyle = 'rgba(255,215,0,0.3)'; ctx.lineWidth = 6;
-        ctx.beginPath(); ctx.arc(orb.x, orb.y, 18, 0, Math.PI * 2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(orb.x, orb.y, 18, 0, Math.PI*2); ctx.stroke();
         ctx.globalAlpha = 1;
         return true;
       });
 
-      /* Draw runner — glowing */
       ctx.globalAlpha = 1;
-      ctx.shadowColor = 'rgba(255,255,255,0.9)';
-      ctx.shadowBlur  = 14;
+      ctx.shadowColor = 'rgba(255,255,255,0.9)'; ctx.shadowBlur = 14;
       ctx.font = '26px serif'; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
       ctx.fillText(RUNNER_EMOJI, RUNNER_X - 2, runnerY);
       ctx.shadowBlur = 0;
 
-      /* Draw popups */
       popups = popups.filter(p => {
         p.age++;
         ctx.globalAlpha = Math.max(0, 1 - p.age / p.life);
@@ -224,34 +221,23 @@ function restartGame() { GS.clear(); window.location.href = 'index.html'; }
       });
       ctx.textAlign = 'left';
 
-      /* Timer bar */
-      document.getElementById('l4-timer').style.width =
-        Math.round((1 - progress) * 100) + '%';
+      document.getElementById('l4-timer').style.width = Math.round((1-progress)*100) + '%';
 
-      /* Timed messages */
       const msgEl = document.getElementById('l4-msg');
       msgs.forEach(m => {
         if (elapsed > m.time && !msgShown.includes(m.time)) {
           msgShown.push(m.time);
           msgEl.style.opacity = '0';
-          setTimeout(() => {
-            msgEl.textContent = m.text;
-            msgEl.style.opacity = '1';
-          }, 300);
+          setTimeout(() => { msgEl.textContent = m.text; msgEl.style.opacity = '1'; }, 300);
           setTimeout(() => { msgEl.style.opacity = '0'; }, 2000);
         }
       });
 
-      if (progress >= 1) {
-        cancelAnimationFrame(rafId);
-        setTimeout(showCard, 600);
-        return;
-      }
+      if (progress >= 1) { cancelAnimationFrame(rafId); setTimeout(showCard, 600); return; }
       rafId = requestAnimationFrame(frame);
     }
-
     rafId = requestAnimationFrame(frame);
-  }, 120); /* 120ms paint delay */
+  }, 120);
 })();
 
 /* ════════════════════════════════════════
@@ -259,13 +245,10 @@ function restartGame() { GS.clear(); window.location.href = 'index.html'; }
    ════════════════════════════════════════ */
 function showCard() {
   goTo('card');
-
   setTimeout(() => {
     const persona = PERSONAS[s.personaKey];
-    if (!persona) { console.error('No persona for key:', s.personaKey); return; }
-
-    const g1 = persona.gradient[0];
-    const g2 = persona.gradient[1];
+    if (!persona) return;
+    const g1 = persona.gradient[0], g2 = persona.gradient[1];
     const wrap = document.getElementById('persona-card-wrap');
 
     wrap.innerHTML = `
@@ -279,7 +262,6 @@ function showCard() {
           <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:white;font-weight:600;margin-bottom:4px;">${persona.name}</div>
           <div style="font-size:11px;color:rgba(255,255,255,0.7);">${s.name}'s Gut Profile</div>
         </div>
-
         <div class="persona-card-body">
           <div style="text-align:center;margin-bottom:18px;">
             <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Gut Score</div>
@@ -304,17 +286,18 @@ function showCard() {
             </div>
           </div>
         </div>
-
         <div class="persona-card-footer">
           <p style="font-size:13px;color:var(--navy);line-height:1.6;margin-bottom:5px;font-weight:500;">${persona.line1}</p>
           <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px;">${persona.line2}</p>
-          <div style="font-size:11px;color:var(--pink);font-weight:500;">iombio.com</div>
+          <a href="https://iombio.com" target="_blank"
+             style="font-size:11px;color:var(--pink);font-weight:500;text-decoration:none;">
+            iombio.com ↗
+          </a>
         </div>
       </div>`;
 
     wrap.style.opacity = '1';
 
-    /* Animate score counter */
     let n = 0;
     const scoreEl = document.getElementById('score-display');
     const iv = setInterval(() => {
@@ -323,12 +306,10 @@ function showCard() {
       if (n >= (s.finalScore || 0)) clearInterval(iv);
     }, 28);
 
-    /* Animate stat bars */
     setTimeout(() => {
-      const fiber  = s.fiberLevel    || 0;
-      const stress = s.stressIndex   || 0;
-      const divers = s.gutDiversity  || 0;
-
+      const fiber  = s.fiberLevel   || 0;
+      const stress = s.stressIndex  || 0;
+      const divers = s.gutDiversity || 0;
       document.getElementById('bar-fiber').style.width  = fiber  + '%';
       document.getElementById('val-fiber').textContent  = fiber;
       document.getElementById('bar-stress').style.width = stress + '%';
@@ -342,81 +323,147 @@ function showCard() {
 }
 
 /* ════════════════════════════════════════
-   SHARE BUTTONS
+   CARD → IMAGE (html2canvas)
+   Used by both WhatsApp and Instagram share
    ════════════════════════════════════════ */
-document.getElementById('btn-wa').addEventListener('click', () => {
-  const persona = PERSONAS[s.personaKey];
-  const gameUrl = window.location.origin;
-  const msg = encodeURIComponent(
+function captureCard() {
+  return new Promise((resolve, reject) => {
+    const card = document.getElementById('persona-card');
+    if (!card) { reject(new Error('Card not found')); return; }
+    if (typeof html2canvas === 'undefined') { reject(new Error('html2canvas not loaded')); return; }
+
+    html2canvas(card, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: null,
+      logging: false
+    }).then(canvas => {
+      canvas.toBlob(blob => {
+        if (blob) resolve(blob);
+        else reject(new Error('toBlob failed'));
+      }, 'image/png');
+    }).catch(reject);
+  });
+}
+
+function setButtonLoading(btnId, loading) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  if (loading) {
+    btn.dataset.originalText = btn.innerHTML;
+    btn.innerHTML = '<span class="share-loading"></span>Preparing...';
+    btn.disabled = true;
+  } else {
+    btn.innerHTML = btn.dataset.originalText || btn.innerHTML;
+    btn.disabled = false;
+  }
+}
+
+/* ════════════════════════════════════════
+   WHATSAPP SHARE
+   ════════════════════════════════════════ */
+document.getElementById('btn-wa').addEventListener('click', async () => {
+  const persona  = PERSONAS[s.personaKey];
+  const gameUrl  = window.location.origin;
+  const shareText =
     `I just discovered I'm a ${persona.name} 🎴\n` +
     `My Gut Score is ${s.finalScore}/100.\n\n` +
     `${persona.line1}\n\n` +
     `Find out your Gut Persona →\n${gameUrl}\n\n` +
-    `#GutJourney #iomBioworks`
-  );
-  window.open('https://wa.me/?text=' + msg, '_blank');
-});
+    `#GutJourney #iomBioworks`;
 
-document.getElementById('btn-ig').addEventListener('click', () => {
-  showToast('📸 Screenshot your card and share to Instagram Stories!');
+  /* Try native image share first (works on mobile) */
+  if (navigator.share && navigator.canShare) {
+    setButtonLoading('btn-wa', true);
+    try {
+      const blob = await captureCard();
+      const file = new File([blob], 'my-gut-persona.png', { type: 'image/png' });
+      const shareData = { files: [file], text: shareText };
+
+      if (navigator.canShare(shareData)) {
+        await navigator.share(shareData);
+        setButtonLoading('btn-wa', false);
+        return;
+      }
+    } catch (err) {
+      /* User cancelled or image share not supported — fall through to text share */
+    }
+    setButtonLoading('btn-wa', false);
+  }
+
+  /* Fallback: open WhatsApp with pre-filled text */
+  window.open('https://wa.me/?text=' + encodeURIComponent(shareText), '_blank');
 });
 
 /* ════════════════════════════════════════
-   MAKE.COM WEBHOOK — fires once on card reveal
-   Includes: all choices, scores, persona,
-   levels_reached, and drop-off tracking
+   INSTAGRAM SHARE
+   ════════════════════════════════════════ */
+document.getElementById('btn-ig').addEventListener('click', async () => {
+  setButtonLoading('btn-ig', true);
+
+  try {
+    const blob = await captureCard();
+    const url  = URL.createObjectURL(blob);
+
+    /* Trigger download */
+    const a = document.createElement('a');
+    a.href     = url;
+    a.download = 'my-gut-persona-' + (s.personaKey || 'card') + '.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+
+    showToast('🎴 Card saved! Open Instagram → Stories → add image', 4000);
+  } catch (err) {
+    showToast('📸 Screenshot the card and share to Instagram Stories!', 3500);
+  }
+
+  setButtonLoading('btn-ig', false);
+});
+
+/* ════════════════════════════════════════
+   MAKE.COM WEBHOOK
    ════════════════════════════════════════ */
 function fireWebhook() {
   const channel = new URLSearchParams(window.location.search).get('utm_source') || 'direct';
-
   const payload = {
-    /* Identity */
-    player_name:        s.name,
-    timestamp:          new Date().toISOString(),
-    channel:            channel,
-    avatar:             s.avatar,
-
-    /* Choices */
-    goal_chosen:        s.goal,
-    choice_morning:     s.choice_morning,
-    choice_lunch_base:  s.lunch_base,
+    player_name:          s.name,
+    timestamp:            new Date().toISOString(),
+    channel:              channel,
+    avatar:               s.avatar,
+    goal_chosen:          s.goal,
+    choice_morning:       s.choice_morning,
+    choice_lunch_base:    s.lunch_base,
     choice_lunch_protein: s.lunch_protein,
-    choice_lunch_veg:   s.lunch_veg,
-    choice_lunch_side:  s.lunch_side,
-    choice_afternoon:   s.choice_afternoon,
-    choice_dinner:      s.choice_dinner,
-
-    /* Scores */
-    morning_score:      s.morning_score    || 0,
-    lunch_score:        s.lunch_score      || 0,
-    afternoon_score:    s.afternoon_score  || 0,
-    dinner_score:       s.dinner_score     || 0,
-
-    /* Runner */
-    runner1_collected:  s.runner1_collected || 0,
-    runner2_collected:  s.runner2_collected || 0,
-    runner3_collected:  s.runner3_collected || 0,
-
-    /* Final */
-    behavioural_score:  s.behavioural      || 0,
-    runner_score:       s.runnerScore      || 0,
-    final_score:        s.finalScore       || 0,
-    persona:            s.personaKey,
-    boss:               s.boss,
-
-    /* Funnel tracking — key field for Google Sheet drop-off analysis */
-    levels_reached:     s.levels_reached   || 4,
-    game_completed:     true
+    choice_lunch_veg:     s.lunch_veg,
+    choice_lunch_side:    s.lunch_side,
+    choice_afternoon:     s.choice_afternoon,
+    choice_dinner:        s.choice_dinner,
+    morning_score:        s.morning_score    || 0,
+    lunch_score:          s.lunch_score      || 0,
+    afternoon_score:      s.afternoon_score  || 0,
+    dinner_score:         s.dinner_score     || 0,
+    runner1_collected:    s.runner1_collected || 0,
+    runner2_collected:    s.runner2_collected || 0,
+    runner3_collected:    s.runner3_collected || 0,
+    behavioural_score:    s.behavioural      || 0,
+    runner_score:         s.runnerScore      || 0,
+    final_score:          s.finalScore       || 0,
+    persona:              s.personaKey,
+    boss:                 s.boss,
+    levels_reached:       s.levels_reached   || 4,
+    game_completed:       true
   };
 
-  /* Replace PLACEHOLDER with your real Make.com webhook URL */
+  /* ← Replace this with your real Make.com webhook URL */
   const webhookUrl = 'https://hook.eu1.make.com/PLACEHOLDER_REPLACE_WITH_REAL_URL';
-
   fetch(webhookUrl, {
     method:  'POST',
     headers: { 'Content-Type': 'application/json' },
     body:    JSON.stringify(payload)
-  }).catch(() => { /* fail silently — don't block the user */ });
+  }).catch(() => {});
 }
 </script>
 </body>
