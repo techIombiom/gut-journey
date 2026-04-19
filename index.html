@@ -149,17 +149,9 @@
 /* ── All functions at TOP LEVEL — never inside DOMContentLoaded ── */
 
 function goTo(id) {
-  document.querySelectorAll('.screen').forEach(s => {
-    if (s.classList.contains('active')) {
-      s.classList.remove('active');
-      s.classList.add('exit');
-      setTimeout(() => s.classList.remove('exit'), 400);
-    }
-  });
-  setTimeout(() => {
-    const el = document.getElementById('screen-' + id);
-    if (el) el.classList.add('active');
-  }, 60);
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('screen-' + id);
+  if (el) el.classList.add('active');
 }
 
 /* ── Init on load ── */
