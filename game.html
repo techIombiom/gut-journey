@@ -56,7 +56,7 @@
       <div class="summary-overlay" id="summary-overlay">
         <div class="summary-label-top">Level 1 Complete — 6am Gut</div>
         <div class="summary-score" id="summary-score">0</div>
-        <div class="summary-of" id="summary-of">prebiotic particles captured out of 20</div>
+        <div class="summary-of">prebiotic particles captured out of 20</div>
         <div class="summary-bar-wrap"><div class="summary-bar-fill" id="summary-bar"></div></div>
         <div class="summary-msg" id="summary-msg"></div>
         <div class="summary-hint">💡 Diet changes can double this. A GMT can unlock even more hidden pathways.</div>
@@ -113,7 +113,7 @@
         <div class="summary-of">prebiotic particles captured out of 30</div>
         <div class="summary-bar-wrap"><div class="summary-bar-fill" id="summary-bar-2"></div></div>
         <div class="summary-msg" id="summary-msg-2"></div>
-        <div class="summary-hint">💡 This is where a GMT changes everything — it shows the hidden pathways →</div>
+        <div class="summary-hint">💡 This is where a GMT changes everything — it reveals the hidden pathways →</div>
         <button class="btn-primary" id="summary-next-btn-2" style="max-width:280px;">Continue →</button>
       </div>
     </div>
@@ -180,8 +180,8 @@
       <div class="pill">Evening · 4 of 4</div>
       <button class="mute-btn">🔊</button>
     </div>
-    <div style="padding:22px 22px 36px;flex:1;background:linear-gradient(180deg, #FAF8F5 60%, #1B2B4B);">
-      <div class="time-stamp" style="color:#E91E8C;">🌙 8:00 PM</div>
+    <div style="padding:22px 22px 36px;flex:1;">
+      <div class="time-stamp" style="color:var(--pink);">🌙 8:00 PM</div>
       <h2 class="serif" style="font-size:30px;color:var(--navy);line-height:1.2;margin-bottom:8px;font-weight:600;">Day's done.<br>Last fuel for your gut <em style="color:var(--pink);">until tomorrow.</em></h2>
       <p style="font-size:13px;color:#888;line-height:1.65;margin-bottom:22px;">What does your gut actually get for dinner?</p>
       <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;" id="dinner-options"></div>
@@ -194,26 +194,28 @@
 <script src="js/state.js"></script>
 <script src="js/constants.js"></script>
 <script src="js/scoring.js"></script>
-<script src="js/runner.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-const state = GS.get();
-if (!state.name) window.location.href = 'index.html';
 
+<script>
+
+/* ─── HELPER: screen transitions ─── */
 function goTo(id) {
   document.querySelectorAll('.screen').forEach(s => {
-    if (s.classList.contains('active')) { s.classList.remove('active'); s.classList.add('exit'); setTimeout(() => s.classList.remove('exit'), 400); }
+    if (s.classList.contains('active')) {
+      s.classList.remove('active');
+      s.classList.add('exit');
+      setTimeout(() => s.classList.remove('exit'), 400);
+    }
   });
-  setTimeout(() => { const el = document.getElementById('screen-' + id); if (el) el.classList.add('active'); }, 60);
+  setTimeout(() => {
+    const el = document.getElementById('screen-' + id);
+    if (el) el.classList.add('active');
+  }, 60);
 }
 
-document.getElementById('morning-name').textContent = GS.val('name', 'Your') + "'s";
-document.getElementById('back-to-morning').addEventListener('click', () => goTo('morning'));
-document.getElementById('back-to-lunch').addEventListener('click', () => goTo('lunch'));
-document.getElementById('back-to-afternoon').addEventListener('click', () => goTo('afternoon'));
-
+/* ─── HELPER: build simple choice screens ─── */
 function buildChoiceOptions(containerId, choiceKey, btnId, saveKey, scoreKey, nextFn) {
   const container = document.getElementById(containerId);
+  if (!container) return;
   const choices = CHOICES[choiceKey];
   Object.entries(choices).forEach(([key, val]) => {
     const div = document.createElement('div');
@@ -230,30 +232,23 @@ function buildChoiceOptions(containerId, choiceKey, btnId, saveKey, scoreKey, ne
   document.getElementById(btnId).addEventListener('click', nextFn);
 }
 
-buildChoiceOptions('morning-options', 'morning', 'btn-morning-next', 'choice_morning', 'morning_score', () => {
-  startPreRunner(() => {
-    const r1cfg = { ...RUNNER_CONFIG.level1, canvasId: 'runner-canvas', timerId: 'timer-bar', countId: 'orb-count-display', flashId: 'flash-overlay', summaryId: 'summary-overlay', preId: 'prerunner-overlay', preCountId: 'prerunner-count' };
-    runLevel('runner1', r1cfg, RUNNER_CONFIG.level1, 1, 20, () => goTo('lunch'));
-  });
-  goTo('runner1');
-});
-
+/* ─── HELPER: build lunch plate sections ─── */
 function buildLunchSections() {
   const container = document.getElementById('lunch-sections');
+  if (!container) return;
   const sections = [
-    { key: 'base',    label: 'Base 🍚',       saveKey: 'lunch_base'    },
-    { key: 'protein', label: 'Protein 💪',     saveKey: 'lunch_protein' },
-    { key: 'veg',     label: 'Vegetables 🥗',  saveKey: 'lunch_veg'     },
-    { key: 'side',    label: 'Side 🥛',        saveKey: 'lunch_side'    }
+    { key: 'base',    label: 'Base 🍚',      saveKey: 'lunch_base'    },
+    { key: 'protein', label: 'Protein 💪',    saveKey: 'lunch_protein' },
+    { key: 'veg',     label: 'Vegetables 🥗', saveKey: 'lunch_veg'     },
+    { key: 'side',    label: 'Side 🥛',       saveKey: 'lunch_side'    }
   ];
   const lunchState = { base: null, protein: null, veg: null, side: null };
 
   sections.forEach(sec => {
-    const wrap = document.createElement('div'); wrap.className = 'plate-section';
+    const wrap  = document.createElement('div'); wrap.className = 'plate-section';
     const label = document.createElement('div'); label.className = 'plate-section-label'; label.textContent = sec.label;
-    const opts = document.createElement('div'); opts.className = 'plate-options';
-    const items = CHOICES.lunch[sec.key];
-    Object.entries(items).forEach(([key, val]) => {
+    const opts  = document.createElement('div'); opts.className = 'plate-options';
+    Object.entries(CHOICES.lunch[sec.key]).forEach(([key, val]) => {
       const chip = document.createElement('div'); chip.className = 'plate-chip';
       chip.textContent = val.emoji + ' ' + val.label;
       chip.addEventListener('click', () => {
@@ -261,8 +256,8 @@ function buildLunchSections() {
         chip.classList.add('selected');
         lunchState[sec.key] = key;
         GS.save({ [sec.saveKey]: key });
-        const allSelected = Object.values(lunchState).every(v => v !== null);
-        document.getElementById('btn-lunch-next').disabled = !allSelected;
+        document.getElementById('btn-lunch-next').disabled =
+          !Object.values(lunchState).every(v => v !== null);
       });
       opts.appendChild(chip);
     });
@@ -271,147 +266,284 @@ function buildLunchSections() {
 
   document.getElementById('btn-lunch-next').addEventListener('click', () => {
     const s = GS.get();
-    const lunchScore = calcLunchScore(s);
-    GS.save({ lunch_score: lunchScore });
-    startPreRunner2(() => {
-      runLevel('runner2', { canvasId: 'runner-canvas-2', timerId: 'timer-bar-2', countId: 'orb-count-display-2', flashId: 'flash-overlay-2', summaryId: 'summary-overlay-2' }, RUNNER_CONFIG.level2, 2, 30, () => goTo('afternoon'));
-    });
+    GS.save({ lunch_score: calcLunchScore(s) });
     goTo('runner2');
+    setTimeout(() => beginCountdown('prerunner-overlay-2', 'prerunner-count-2', () => {
+      runLevel('runner-canvas-2', 'timer-bar-2', 'orb-count-display-2',
+               'flash-overlay-2', 'summary-overlay-2', 'summary-score-2',
+               'summary-bar-2', 'summary-msg-2', 'summary-next-btn-2',
+               RUNNER_CONFIG.level2, 2, 30, () => goTo('afternoon'));
+    }), 100);
   });
 }
-buildLunchSections();
 
-buildChoiceOptions('afternoon-options', 'afternoon', 'btn-afternoon-next', 'choice_afternoon', 'afternoon_score', () => {
-  startPreRunner3(() => {
-    runLevel('runner3', { canvasId: 'runner-canvas-3', timerId: 'timer-bar-3', countId: 'orb-count-display-3', flashId: 'flash-overlay-3', summaryId: 'summary-overlay-3' }, RUNNER_CONFIG.level3, 3, 40, () => goTo('dinner'));
-  });
-  goTo('runner3');
-});
-
-buildChoiceOptions('dinner-options', 'dinner', 'btn-dinner-next', 'choice_dinner', 'dinner_score', () => {
-  const s = GS.get();
-  const result = calcPersona(s);
-  GS.save(result);
-  window.location.href = 'results.html';
-});
-
-function runLevel(screenId, ids, config, levelNum, total, nextFn) {
-  const canvas = document.getElementById(ids.canvasId || 'runner-canvas');
-  const container = canvas.parentElement;
-  canvas.width = container.offsetWidth || 375;
-  canvas.height = container.offsetHeight || 300;
-
-  const customConfig = {
-    ...config,
-    flashTime: config.flashTime
-  };
-
-  const overrides = {
-    orbCountEl: document.getElementById(ids.countId || 'orb-count-display'),
-    timerEl: document.getElementById(ids.timerId || 'timer-bar'),
-    flashEl: document.getElementById(ids.flashId || 'flash-overlay'),
-    total
-  };
-
-  initRunnerCustom(canvas, customConfig, overrides, (collected) => {
-    GS.save({ ['runner' + levelNum + '_collected']: collected });
-    const summaryEl = document.getElementById(ids.summaryId || 'summary-overlay');
-    const scoreEl = summaryEl.querySelector('.summary-score') || document.getElementById('summary-score');
-    const barEl = summaryEl.querySelector('.summary-bar-fill') || document.getElementById('summary-bar');
-    const msgEl = summaryEl.querySelector('.summary-msg') || document.getElementById('summary-msg');
-    summaryEl.classList.add('visible');
-    let n = 0;
-    const iv = setInterval(() => { n = Math.min(n+1, collected); if(scoreEl) scoreEl.textContent = n; if(n>=collected) clearInterval(iv); }, 40);
-    setTimeout(() => { if(barEl) barEl.style.width = Math.round((collected/total)*100)+'%'; }, 400);
-    const pct = Math.round((collected/total)*100);
-    if (msgEl) {
-      if (pct < 35) msgEl.textContent = 'On your current diet, your gut is missing most of what it needs.';
-      else if (pct < 60) msgEl.textContent = 'Your gut is picking up some prebiotics — but still leaving a lot on the table.';
-      else msgEl.textContent = 'Not bad! Your gut is capturing more than most. A GMT could unlock the rest.';
+/* ─── RUNNER: countdown before level starts ─── */
+function beginCountdown(overlayId, countId, runFn) {
+  let count = 3;
+  const overlay  = document.getElementById(overlayId);
+  const countEl  = document.getElementById(countId);
+  if (overlay) overlay.classList.add('visible');
+  const iv = setInterval(() => {
+    count--;
+    if (count > 0) {
+      if (countEl) countEl.textContent = 'Starting in ' + count + '...';
+    } else {
+      clearInterval(iv);
+      if (overlay) overlay.classList.remove('visible');
+      setTimeout(runFn, 350);
     }
-    const nextBtn = summaryEl.querySelector('button') || document.getElementById('summary-next-btn');
-    if (nextBtn) nextBtn.onclick = nextFn;
-  });
+  }, 1000);
 }
 
-function initRunnerCustom(canvas, config, overrides, onComplete) {
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
-  const { speed, totalOrbs, spawnInterval, duration, bgColor, flashTime } = config;
-  const { orbCountEl, timerEl, flashEl, total } = overrides;
-  const ZONES = [H*0.22, H*0.5, H*0.78];
-  let runnerZone=1, runnerY=ZONES[1], targetY=ZONES[1], autoReturnTimer=null;
-  let collected=0, collectedIds=new Set(), orbsSpawned=0, orbs=[], popups=[];
-  let lastSpawn=null, flashShown=false, flashDone=false, gameEnded=false, startTime=null, rafId=null;
-  const RUNNER_EMOJI = GS.val('avatar','male')==='female'?'🚶‍♀️':'🚶';
-  const RUNNER_X=W*0.13;
+/* ─── RUNNER: core game loop ─── */
+function runLevel(canvasId, timerId, countId, flashId, summaryId,
+                  scoreElId, barElId, msgElId, nextBtnId,
+                  config, levelNum, total, nextFn) {
 
-  function tap(cy) {
-    if(gameEnded) return;
-    const rect=canvas.getBoundingClientRect(), y=cy-rect.top;
-    if(y<H/2) runnerZone=Math.max(0,runnerZone-1); else runnerZone=Math.min(2,runnerZone+1);
-    targetY=ZONES[runnerZone];
-    if(autoReturnTimer) clearTimeout(autoReturnTimer);
-    autoReturnTimer=setTimeout(()=>{runnerZone=1;targetY=ZONES[1];},1100);
+  const canvas    = document.getElementById(canvasId);
+  const container = canvas.parentElement;
+  canvas.width  = container.offsetWidth  || 375;
+  canvas.height = container.offsetHeight || 300;
+  const ctx = canvas.getContext('2d');
+
+  const { speed, totalOrbs, spawnInterval, duration, bgColor, flashTime } = config;
+  const W = canvas.width, H = canvas.height;
+  const ZONES = [H * 0.22, H * 0.5, H * 0.78];
+
+  let runnerZone = 1, runnerY = ZONES[1], targetY = ZONES[1], autoReturnTimer = null;
+  let collected = 0, collectedIds = new Set(), orbsSpawned = 0, orbs = [], popups = [];
+  let lastSpawn = null, flashShown = false, flashDone = false, gameEnded = false;
+  let startTime = null, rafId = null;
+
+  const RUNNER_EMOJI = GS.val('avatar', 'male') === 'female' ? '🚶‍♀️' : '🚶';
+  const RUNNER_X     = W * 0.13;
+
+  function tap(clientY) {
+    if (gameEnded) return;
+    const rect = canvas.getBoundingClientRect();
+    const y = clientY - rect.top;
+    if (y < H / 2) runnerZone = Math.max(0, runnerZone - 1);
+    else            runnerZone = Math.min(2, runnerZone + 1);
+    targetY = ZONES[runnerZone];
+    if (autoReturnTimer) clearTimeout(autoReturnTimer);
+    autoReturnTimer = setTimeout(() => { runnerZone = 1; targetY = ZONES[1]; }, 1100);
   }
-  canvas.addEventListener('click', e=>tap(e.clientY));
-  canvas.addEventListener('touchstart', e=>{e.preventDefault();tap(e.touches[0].clientY);},{passive:false});
+
+  canvas.addEventListener('click',      e => tap(e.clientY));
+  canvas.addEventListener('touchstart', e => { e.preventDefault(); tap(e.touches[0].clientY); }, { passive: false });
 
   function frame(now) {
-    if(!startTime){startTime=now;lastSpawn=now;}
-    if(gameEnded) return;
-    const elapsed=now-startTime, progress=Math.min(elapsed/duration,1);
-    ctx.clearRect(0,0,W,H); ctx.fillStyle=bgColor; ctx.fillRect(0,0,W,H);
-    for(let i=0;i<3;i++){const a=0.05+0.03*Math.sin(elapsed*0.0008+i*2);ctx.strokeStyle=`rgba(76,175,80,${a})`;ctx.lineWidth=1;ctx.setLineDash([6,14]);ctx.beginPath();ctx.moveTo(0,ZONES[i]);ctx.lineTo(W,ZONES[i]);ctx.stroke();}
+    if (!startTime) { startTime = now; lastSpawn = now; }
+    if (gameEnded) return;
+
+    const elapsed  = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, W, H);
+
+    // lane guides
+    for (let i = 0; i < 3; i++) {
+      const a = 0.05 + 0.03 * Math.sin(elapsed * 0.0008 + i * 2);
+      ctx.strokeStyle = `rgba(76,175,80,${a})`;
+      ctx.lineWidth = 1; ctx.setLineDash([6, 14]);
+      ctx.beginPath(); ctx.moveTo(0, ZONES[i]); ctx.lineTo(W, ZONES[i]); ctx.stroke();
+    }
     ctx.setLineDash([]);
-    if(now-lastSpawn>spawnInterval&&orbsSpawned<totalOrbs){const zone=Math.floor(Math.random()*3),id='o_'+Date.now()+'_'+Math.random().toString(36).substr(2,5);orbs.push({id,x:W+18,y:ZONES[zone],done:false});orbsSpawned++;lastSpawn=now;}
-    runnerY+=(targetY-runnerY)*0.1;
-    orbs=orbs.filter(orb=>{
-      if(orb.done) return false;
-      orb.x-=speed/60;
-      const dx=(RUNNER_X+14)-orb.x,dy=runnerY-orb.y;
-      if(Math.sqrt(dx*dx+dy*dy)<22&&!collectedIds.has(orb.id)){
-        collectedIds.add(orb.id);collected++;
-        if(orbCountEl) orbCountEl.textContent='⚡ '+collected+' / '+total;
-        popups.push({x:orb.x,y:orb.y-18,text:'+1 Prebiotic 🌿',color:'#81C784',age:0,life:45});
-        orb.done=true;return false;
+
+    // spawn orbs
+    if (now - lastSpawn > spawnInterval && orbsSpawned < totalOrbs) {
+      const zone = Math.floor(Math.random() * 3);
+      const id   = 'o_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+      orbs.push({ id, x: W + 18, y: ZONES[zone], done: false });
+      orbsSpawned++; lastSpawn = now;
+    }
+
+    runnerY += (targetY - runnerY) * 0.1;
+
+    // update orbs
+    orbs = orbs.filter(orb => {
+      if (orb.done) return false;
+      orb.x -= speed / 60;
+
+      const dx   = (RUNNER_X + 14) - orb.x;
+      const dy   = runnerY - orb.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist < 22 && !collectedIds.has(orb.id)) {
+        collectedIds.add(orb.id);
+        collected++;
+        const el = document.getElementById(countId);
+        if (el) el.textContent = '⚡ ' + collected + ' / ' + total;
+        popups.push({ x: orb.x, y: orb.y - 18, text: '+1 Prebiotic 🌿', color: '#81C784', age: 0, life: 45 });
+        orb.done = true;
+        return false;
       }
-      if(orb.x<-32){if(!collectedIds.has(orb.id))popups.push({x:16,y:orb.y,text:'missed',color:'rgba(255,255,255,0.25)',age:0,life:40});return false;}
-      const pulse=1+0.07*Math.sin(elapsed*0.007+orb.x*0.08);
-      ctx.fillStyle='#4CAF50';ctx.globalAlpha=0.88;ctx.beginPath();ctx.arc(orb.x,orb.y,15*pulse,0,Math.PI*2);ctx.fill();
-      ctx.strokeStyle='rgba(129,199,132,0.3)';ctx.lineWidth=4;ctx.beginPath();ctx.arc(orb.x,orb.y,15*pulse+5,0,Math.PI*2);ctx.stroke();
-      ctx.fillStyle='white';ctx.globalAlpha=1;ctx.font='bold 10px DM Sans,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('P',orb.x,orb.y+0.5);
+      if (orb.x < -32) {
+        if (!collectedIds.has(orb.id))
+          popups.push({ x: 16, y: orb.y, text: 'missed', color: 'rgba(255,255,255,0.25)', age: 0, life: 40 });
+        return false;
+      }
+
+      // draw orb
+      const pulse = 1 + 0.07 * Math.sin(elapsed * 0.007 + orb.x * 0.08);
+      ctx.fillStyle = '#4CAF50'; ctx.globalAlpha = 0.88;
+      ctx.beginPath(); ctx.arc(orb.x, orb.y, 15 * pulse, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = 'rgba(129,199,132,0.3)'; ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.arc(orb.x, orb.y, 15 * pulse + 5, 0, Math.PI * 2); ctx.stroke();
+      ctx.fillStyle = 'white'; ctx.globalAlpha = 1;
+      ctx.font = 'bold 10px DM Sans,sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('P', orb.x, orb.y + 0.5);
       return true;
     });
-    ctx.globalAlpha=1;ctx.textAlign='left';ctx.font='26px serif';ctx.textBaseline='middle';ctx.fillText(RUNNER_EMOJI,RUNNER_X-2,runnerY);
-    popups=popups.filter(p=>{p.age++;ctx.globalAlpha=Math.max(0,1-p.age/p.life);ctx.font='500 11px DM Sans,sans-serif';ctx.fillStyle=p.color;ctx.textAlign='center';ctx.fillText(p.text,p.x,p.y-p.age*0.45);ctx.globalAlpha=1;return p.age<p.life;});
-    ctx.textAlign='left';ctx.font='10px DM Sans,sans-serif';ctx.fillStyle='rgba(255,255,255,0.18)';ctx.textAlign='right';ctx.fillText('tap upper / lower half to move',W-10,H-10);ctx.textAlign='left';
-    if(timerEl) timerEl.style.width=Math.round((1-progress)*100)+'%';
-    if(elapsed>=flashTime&&!flashShown&&!flashDone){flashShown=true;if(flashEl)flashEl.classList.add('visible');setTimeout(()=>{if(flashEl)flashEl.classList.remove('visible');flashDone=true;flashShown=false;},2800);}
-    if(progress>=1){gameEnded=true;cancelAnimationFrame(rafId);if(onComplete)onComplete(collected);return;}
-    rafId=requestAnimationFrame(frame);
+
+    // draw runner
+    ctx.globalAlpha = 1; ctx.textAlign = 'left';
+    ctx.font = '26px serif'; ctx.textBaseline = 'middle';
+    ctx.fillText(RUNNER_EMOJI, RUNNER_X - 2, runnerY);
+
+    // draw popups
+    popups = popups.filter(p => {
+      p.age++;
+      ctx.globalAlpha = Math.max(0, 1 - p.age / p.life);
+      ctx.font = '500 11px DM Sans,sans-serif'; ctx.fillStyle = p.color;
+      ctx.textAlign = 'center';
+      ctx.fillText(p.text, p.x, p.y - p.age * 0.45);
+      ctx.globalAlpha = 1;
+      return p.age < p.life;
+    });
+
+    ctx.textAlign = 'left';
+    ctx.font = '10px DM Sans,sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.18)';
+    ctx.textAlign = 'right';
+    ctx.fillText('tap upper / lower half to move', W - 10, H - 10);
+    ctx.textAlign = 'left';
+
+    // timer bar
+    const timerEl = document.getElementById(timerId);
+    if (timerEl) timerEl.style.width = Math.round((1 - progress) * 100) + '%';
+
+    // GMT flash
+    if (elapsed >= flashTime && !flashShown && !flashDone) {
+      flashShown = true;
+      const fo = document.getElementById(flashId);
+      if (fo) fo.classList.add('visible');
+      setTimeout(() => {
+        if (fo) fo.classList.remove('visible');
+        flashDone = true; flashShown = false;
+      }, 2800);
+    }
+
+    if (progress >= 1) {
+      gameEnded = true;
+      cancelAnimationFrame(rafId);
+      showLevelSummary(collected, total, levelNum, summaryId, scoreElId, barElId, msgElId, nextBtnId, nextFn);
+      return;
+    }
+    rafId = requestAnimationFrame(frame);
   }
-  rafId=requestAnimationFrame(frame);
+
+  rafId = requestAnimationFrame(frame);
 }
 
-function makePreRunnerFn(overlayId, countId, runFn) {
-  return function() {
-    let count=3;
-    const overlay=document.getElementById(overlayId), countEl=document.getElementById(countId);
-    if(overlay) overlay.classList.add('visible');
-    setTimeout(()=>{
-      const iv=setInterval(()=>{
-        count--;
-        if(count>0){if(countEl)countEl.textContent='Starting in '+count+'...';}
-        else{clearInterval(iv);if(overlay)overlay.classList.remove('visible');setTimeout(runFn,350);}
-      },1000);
-    },300);
-  };
+/* ─── RUNNER: level summary overlay ─── */
+function showLevelSummary(collected, total, levelNum, summaryId, scoreElId, barElId, msgElId, nextBtnId, nextFn) {
+  const overlay = document.getElementById(summaryId);
+  if (!overlay) return;
+  overlay.classList.add('visible');
+
+  GS.save({ ['runner' + levelNum + '_collected']: collected });
+
+  // count-up animation
+  let n = 0;
+  const scoreEl = document.getElementById(scoreElId);
+  const iv = setInterval(() => {
+    n = Math.min(n + 1, collected);
+    if (scoreEl) scoreEl.textContent = n;
+    if (n >= collected) clearInterval(iv);
+  }, 40);
+
+  setTimeout(() => {
+    const barEl = document.getElementById(barElId);
+    if (barEl) barEl.style.width = Math.round((collected / total) * 100) + '%';
+  }, 400);
+
+  const pct = Math.round((collected / total) * 100);
+  const msgEl = document.getElementById(msgElId);
+  if (msgEl) {
+    if (pct < 35)      msgEl.textContent = 'On your current diet, your gut is missing most of what it needs.';
+    else if (pct < 60) msgEl.textContent = 'Your gut is picking up some prebiotics — but still leaving a lot on the table.';
+    else               msgEl.textContent = 'Not bad! Your gut is capturing more than most. A GMT could unlock the rest.';
+  }
+
+  const nextBtn = document.getElementById(nextBtnId);
+  if (nextBtn) nextBtn.onclick = nextFn;
 }
 
-const startPreRunner = makePreRunnerFn('prerunner-overlay','prerunner-count', () => {});
-const startPreRunner2 = makePreRunnerFn('prerunner-overlay-2','prerunner-count-2', () => {});
-const startPreRunner3 = makePreRunnerFn('prerunner-overlay-3','prerunner-count-3', () => {});
-});</script>
+/* ─── INIT (runs after DOM is ready) ─── */
+document.addEventListener('DOMContentLoaded', function () {
+
+  // redirect if no session
+  const state = GS.get();
+  if (!state.name) { window.location.href = 'index.html'; return; }
+
+  // personalise name
+  const nameEl = document.getElementById('morning-name');
+  if (nameEl) nameEl.textContent = state.name + "'s";
+
+  // back buttons
+  document.getElementById('back-to-morning').addEventListener('click',   () => goTo('morning'));
+  document.getElementById('back-to-lunch').addEventListener('click',     () => goTo('lunch'));
+  document.getElementById('back-to-afternoon').addEventListener('click', () => goTo('afternoon'));
+
+  /* ── MORNING ── */
+  buildChoiceOptions(
+    'morning-options', 'morning',
+    'btn-morning-next', 'choice_morning', 'morning_score',
+    () => {
+      goTo('runner1');
+      setTimeout(() => beginCountdown('prerunner-overlay', 'prerunner-count', () => {
+        runLevel('runner-canvas', 'timer-bar', 'orb-count-display',
+                 'flash-overlay', 'summary-overlay', 'summary-score',
+                 'summary-bar', 'summary-msg', 'summary-next-btn',
+                 RUNNER_CONFIG.level1, 1, 20, () => goTo('lunch'));
+      }), 100);
+    }
+  );
+
+  /* ── LUNCH PLATE ── */
+  buildLunchSections();
+
+  /* ── AFTERNOON ── */
+  buildChoiceOptions(
+    'afternoon-options', 'afternoon',
+    'btn-afternoon-next', 'choice_afternoon', 'afternoon_score',
+    () => {
+      goTo('runner3');
+      setTimeout(() => beginCountdown('prerunner-overlay-3', 'prerunner-count-3', () => {
+        runLevel('runner-canvas-3', 'timer-bar-3', 'orb-count-display-3',
+                 'flash-overlay-3', 'summary-overlay-3', 'summary-score-3',
+                 'summary-bar-3', 'summary-msg-3', 'summary-next-btn-3',
+                 RUNNER_CONFIG.level3, 3, 40, () => goTo('dinner'));
+      }), 100);
+    }
+  );
+
+  /* ── DINNER ── */
+  buildChoiceOptions(
+    'dinner-options', 'dinner',
+    'btn-dinner-next', 'choice_dinner', 'dinner_score',
+    () => {
+      const s      = GS.get();
+      const result = calcPersona(s);
+      GS.save(result);
+      window.location.href = 'results.html';
+    }
+  );
+
+});
+</script>
 </body>
 </html>
