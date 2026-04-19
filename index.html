@@ -87,13 +87,16 @@
 
   /* Render shared components */
   const hP = document.getElementById('header-personalise');
-  if (hP) hP.outerHTML = renderHeader({ showBack:true, backHref:'#', backLabel:'Back' });
+  if (hP) { hP.innerHTML = renderHeader({ showBack:true, backHref:'#', backLabel:'Back' }); }
   const hG = document.getElementById('header-goal');
-  if (hG) hG.outerHTML = renderHeader({ pill:'Gut Goal', showMute:true });
+  if (hG) { hG.innerHTML = renderHeader({ pill:'Gut Goal', showMute:true }); }
   const fL = document.getElementById('footer-landing');
-  if (fL) fL.outerHTML = renderFooter();
-  document.getElementById('back-to-landing').onclick = () => goTo('landing');
-  document.getElementById('back-to-personalise').onclick = () => goTo('personalise');
+  if (fL) { fL.innerHTML = renderFooter(); }
+  /* Re-bind back buttons after innerHTML render */
+  const backToLanding = document.querySelector('#header-personalise .back-btn');
+  if (backToLanding) backToLanding.addEventListener('click', (e) => { e.preventDefault(); goTo('landing'); });
+  const backToPersonalise = document.querySelector('#header-goal .back-btn');
+  if (backToPersonalise) backToPersonalise.addEventListener('click', (e) => { e.preventDefault(); goTo('personalise'); });
 
   /* Read URL parameters on game start and save to state */
   (function readUrlParams() {

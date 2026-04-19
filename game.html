@@ -559,15 +559,25 @@ document.addEventListener('DOMContentLoaded', function () {
   if (!state.name) { window.location.href = 'index.html'; return; }
 
   /* Render shared headers */
-  ['morning','lunch','afternoon','dinner'].forEach((s,i) => {
-    const pills = ['Morning · 1 of 4','Lunch · 2 of 4','Afternoon · 3 of 4','Evening · 4 of 4'];
-    const backs = ['index.html','#','#','#'];
-    const backLabels = ['Back','Back','Back','Back'];
-    const el = document.getElementById('hdr-'+s);
-    if (el) el.outerHTML = renderHeader({ pill:pills[i], showMute:true, showBack:true, backHref:backs[i], backLabel:backLabels[i] });
+  const headerConfig = [
+    { id:'hdr-morning',   pill:'Morning · 1 of 4',   backHref:'index.html' },
+    { id:'hdr-lunch',     pill:'Lunch · 2 of 4',     backHref:'#' },
+    { id:'hdr-afternoon', pill:'Afternoon · 3 of 4', backHref:'#' },
+    { id:'hdr-dinner',    pill:'Evening · 4 of 4',   backHref:'#' },
+  ];
+  headerConfig.forEach(cfg => {
+    const el = document.getElementById(cfg.id);
+    if (el) el.innerHTML = renderHeader({ pill:cfg.pill, showMute:true, showBack:true, backHref:cfg.backHref, backLabel:'Back' });
   });
+  /* Re-bind back buttons */
+  const bLunch = document.querySelector('#hdr-lunch .back-btn');
+  if (bLunch) bLunch.addEventListener('click', e => { e.preventDefault(); goTo('morning'); });
+  const bAfternoon = document.querySelector('#hdr-afternoon .back-btn');
+  if (bAfternoon) bAfternoon.addEventListener('click', e => { e.preventDefault(); goTo('lunch'); });
+  const bDinner = document.querySelector('#hdr-dinner .back-btn');
+  if (bDinner) bDinner.addEventListener('click', e => { e.preventDefault(); goTo('afternoon'); });
   const fg = document.getElementById('footer-game');
-  if (fg) fg.outerHTML = renderFooter();
+  if (fg) fg.innerHTML = renderFooter();
 
   // personalise name
   const nameEl = document.getElementById('morning-name');

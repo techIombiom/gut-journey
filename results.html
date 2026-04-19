@@ -71,9 +71,9 @@ GS.save({ levels_reached: 4 });
 /* Render card screen header + footer after card is shown */
 function renderCardScreenComponents() {
   const hc = document.getElementById('hdr-card');
-  if (hc) hc.outerHTML = renderHeader({ dark:true, showMute:true });
+  if (hc) hc.innerHTML = renderHeader({ dark:true, showMute:true });
   const fr = document.getElementById('footer-results');
-  if (fr) fr.outerHTML = renderFooter({ dark:true });
+  if (fr) fr.innerHTML = renderFooter({ dark:true });
 }
 
 function goTo(id) {

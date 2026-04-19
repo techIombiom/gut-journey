@@ -98,9 +98,9 @@ const primaryProduct = PRODUCTS[primaryKey];
 const secondaryProduct = PRODUCTS[secondaryKey];
 /* Render header + footer */
 const hr = document.getElementById('hdr-recommend');
-if (hr) hr.outerHTML = renderHeader({ showBack:true, backHref:'results.html', backLabel:'Back to card' });
+if (hr) hr.innerHTML = renderHeader({ showBack:true, backHref:'results.html', backLabel:'Back to card' });
 const fr = document.getElementById('footer-recommend');
-if (fr) fr.outerHTML = renderFooter();
+if (fr) fr.innerHTML = renderFooter();
 
 if (primaryProduct && primaryProduct.type === 'prebiotic' && secondaryProduct && secondaryProduct.type === 'test') {
   document.getElementById('edu-strip').style.display = 'block';

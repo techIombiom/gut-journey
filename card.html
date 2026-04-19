@@ -130,9 +130,9 @@
 /* Render header + footer */
 setTimeout(() => {
   const hh = document.getElementById('hdr-card-share');
-  if (hh) hh.outerHTML = renderHeader({ dark:false });
+  if (hh) hh.innerHTML = renderHeader({ dark:false });
   const ff = document.getElementById('footer-card-share');
-  if (ff) ff.outerHTML = renderFooter();
+  if (ff) ff.innerHTML = renderFooter();
 }, 0);
 
 const params  = new URLSearchParams(window.location.search);
