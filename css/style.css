@@ -197,6 +197,15 @@ html,body{height:100%;background:var(--navy);display:flex;align-items:center;jus
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+  pointer-events: auto;
+  z-index: 1;
+}
+
+/* Back btn and right controls sit above the centered logo */
+.site-header .back-btn,
+.site-header .header-right {
+  position: relative;
+  z-index: 2;
 }
 
 .header-right {
