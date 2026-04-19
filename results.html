@@ -11,52 +11,22 @@
 <style>
   #screen-level4 { background: #0d1f3c; min-height: 100vh; }
   .l4-text { font-family:'Cormorant Garamond',serif; color:white; text-align:center; font-style:italic; }
-
-  @keyframes cardReveal {
-    0%  { transform:scale(0.4) translateY(40px); opacity:0; }
-    100%{ transform:scale(1)   translateY(0);    opacity:1; }
-  }
+  @keyframes cardReveal { 0%{transform:scale(0.4) translateY(40px);opacity:0;} 100%{transform:scale(1) translateY(0);opacity:1;} }
   .card-reveal { animation: cardReveal 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards; }
-
-  #screen-level4.active {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-  #l4-canvas-wrap {
-    position: relative;
-    flex: 1;
-    min-height: 0;
-    overflow: hidden;
-  }
-  #l4-canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-    touch-action: none;
-  }
-
-  .share-loading {
-    display: inline-block;
-    width: 16px; height: 16px;
-    border: 2px solid rgba(255,255,255,0.4);
-    border-top-color: white;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    vertical-align: middle;
-    margin-right: 6px;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  #screen-level4.active { display:flex; flex-direction:column; min-height:100vh; }
+  #l4-canvas-wrap { position:relative; flex:1; min-height:0; overflow:hidden; }
+  #l4-canvas { display:block; width:100%; height:100%; touch-action:none; }
+  .share-loading { display:inline-block; width:16px; height:16px; border:2px solid rgba(255,255,255,0.4); border-top-color:white; border-radius:50%; animation:spin 0.7s linear infinite; vertical-align:middle; margin-right:6px; }
+  @keyframes spin { to { transform:rotate(360deg); } }
 </style>
 </head>
 <body>
 <div id="gut-app">
 
-  <!-- LEVEL 4 CINEMATIC -->
   <div id="screen-level4" class="screen active">
     <div class="runner-header" style="background:#0d1f3c;flex-shrink:0;">
-      <div class="runner-label">Your gut — fully unlocked 🌿</div>
-      <div class="orb-count" id="l4-orb-count">⚡ 0 / 50</div>
+      <div class="runner-label">Your gut — fully unlocked</div>
+      <div class="orb-count" id="l4-orb-count">&#x26A1; 0 / 50</div>
     </div>
     <div style="background:#0d1f3c;padding:0 18px 10px;flex-shrink:0;">
       <div class="timer-bar-wrap" style="background:#0d1f3c;">
@@ -71,43 +41,41 @@
     </div>
   </div>
 
-  <!-- PERSONA CARD SCREEN -->
   <div id="screen-card" class="screen" style="background:var(--navy);overflow-y:auto;">
-    <div style="padding:18px 20px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
-      <div class="logo-text" style="color:rgba(255,255,255,0.5);">iom Bioworks</div>
-      <button class="mute-btn" style="color:white;opacity:0.5;">🔊</button>
-    </div>
+    <div id="hdr-card"></div>
     <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:0 20px 36px;">
       <div id="persona-card-wrap" style="opacity:0;width:100%;max-width:320px;margin-bottom:24px;"></div>
       <div style="width:100%;max-width:320px;display:flex;flex-direction:column;gap:10px;">
-        <button class="btn-wa"  id="btn-wa">💬 Share on WhatsApp</button>
-        <button class="btn-ig"  id="btn-ig">📸 Share on Instagram</button>
-        <button class="btn-primary" onclick="window.location.href='recommend.html'"
-          style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);">
-          What does my gut actually need? →
-        </button>
-        <button class="btn-secondary" onclick="restartGame()"
-          style="background:transparent;color:rgba(255,255,255,0.4);border-color:rgba(255,255,255,0.15);font-size:13px;padding:12px;">
-          Retake the Journey 🔄
-        </button>
+        <button class="btn-wa" id="btn-wa">&#x1F4AC; Share on WhatsApp</button>
+        <button class="btn-ig" id="btn-ig">&#x1F4F8; Share on Instagram</button>
+        <button class="btn-primary" onclick="window.location.href='recommend.html'" style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);">What does my gut actually need? &#x2192;</button>
+        <button class="btn-secondary" onclick="restartGame()" style="background:transparent;color:rgba(255,255,255,0.4);border-color:rgba(255,255,255,0.15);font-size:13px;padding:12px;">Retake the Journey &#x1F504;</button>
       </div>
     </div>
+    <div id="footer-results"></div>
   </div>
 
 </div>
-
 <div id="toast" class="toast"></div>
 
 <script src="js/state.js"></script>
 <script src="js/constants.js"></script>
 <script src="js/scoring.js"></script>
+<script src="js/components.js"></script>
 <script>
 const s = GS.get();
 if (!s.name || !s.personaKey) window.location.href = 'index.html';
 
 GS.save({ levels_reached: 4 });
 
-/* ── Utilities ── */
+/* Render card screen header + footer after card is shown */
+function renderCardScreenComponents() {
+  const hc = document.getElementById('hdr-card');
+  if (hc) hc.outerHTML = renderHeader({ dark:true, showMute:true });
+  const fr = document.getElementById('footer-results');
+  if (fr) fr.outerHTML = renderFooter({ dark:true });
+}
+
 function goTo(id) {
   document.querySelectorAll('.screen').forEach(sc => {
     if (sc.classList.contains('active')) {
@@ -116,24 +84,31 @@ function goTo(id) {
       setTimeout(() => sc.classList.remove('exit'), 400);
     }
   });
-  setTimeout(() => {
-    const el = document.getElementById('screen-' + id);
-    if (el) el.classList.add('active');
-  }, 60);
+  setTimeout(() => { const el = document.getElementById('screen-' + id); if (el) el.classList.add('active'); }, 60);
 }
 
 function showToast(msg, duration) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('visible');
+  t.textContent = msg; t.classList.add('visible');
   setTimeout(() => t.classList.remove('visible'), duration || 3200);
 }
 
 function restartGame() { GS.clear(); window.location.href = 'index.html'; }
 
-/* ════════════════════════════════════════
-   LEVEL 4 CINEMATIC
-   ════════════════════════════════════════ */
+function buildCardUrl() {
+  const base = window.location.origin + '/card.html';
+  const p = new URLSearchParams({
+    p:  s.personaKey   || '',
+    s:  s.finalScore   || 0,
+    n:  encodeURIComponent(s.name || ''),
+    f:  s.fiberLevel   || 0,
+    st: s.stressIndex  || 0,
+    d:  s.gutDiversity || 0
+  });
+  return base + '?' + p.toString();
+}
+
+/* ── Level 4 Cinematic ── */
 (function runL4() {
   const canvas = document.getElementById('l4-canvas');
   const wrap   = document.getElementById('l4-canvas-wrap');
@@ -150,114 +125,64 @@ function restartGame() { GS.clear(); window.location.href = 'index.html'; }
 
   requestAnimationFrame(function() { requestAnimationFrame(function startCinematic() {
     const { W, H } = sizeCanvas();
-    const ctx      = canvas.getContext('2d');
-    const TOTAL    = 50;
-    const DURATION = 10000;
-    const ZONES    = [H * 0.22, H * 0.5, H * 0.78];
-
-    let collected = 0, orbs = [], popups = [];
-    let orbsSpawned = 0, lastSpawn = null, startTime = null, rafId = null;
-
-    const RUNNER_X     = W * 0.13;
-    const RUNNER_EMOJI = GS.val('avatar', 'male') === 'female' ? '🚶‍♀️' : '🚶';
+    const ctx = canvas.getContext('2d');
+    const TOTAL = 50, DURATION = 10000;
+    const ZONES = [H*0.22, H*0.5, H*0.78];
+    let collected=0, orbs=[], popups=[], orbsSpawned=0, lastSpawn=null, startTime=null, rafId=null;
+    const RUNNER_X = W*0.13;
+    const RUNNER_EMOJI = GS.val('avatar','male')==='female'?'\uD83D\uDEB6\u200D\u2640\uFE0F':'\uD83D\uDEB6';
     const msgs = [
-      { time: 2000, text: 'This is your gut — fully optimised' },
-      { time: 5000, text: 'Gut Test + Prebiotics.\nNothing left uncaptured.' },
-      { time: 8000, text: (s.name || 'You') + ', meet your\nGut Persona 🎴' }
+      { time:2000, text:'This is your gut \u2014 fully optimised' },
+      { time:5000, text:'Gut Test + Prebiotics.\nNothing left uncaptured.' },
+      { time:8000, text:(s.name||'You')+', meet your\nGut Persona \uD83C\uDFB4' }
     ];
-    const msgShown = [];
+    const msgShown=[];
 
     function frame(now) {
-      if (!startTime) { startTime = now; lastSpawn = now; }
-      const elapsed  = now - startTime;
-      const progress = Math.min(elapsed / DURATION, 1);
-
-      ctx.clearRect(0, 0, W, H);
-      ctx.fillStyle = '#0a1528'; ctx.fillRect(0, 0, W, H);
-
-      for (let i = 0; i < W; i += 4) {
-        const a = 0.04 + 0.03 * Math.sin(i * 0.05 + elapsed * 0.002);
-        ctx.fillStyle = `rgba(76,175,80,${a})`; ctx.fillRect(i, 0, 2, H);
-      }
-
-      if (now - lastSpawn > 200 && orbsSpawned < TOTAL) {
-        const zone = Math.floor(Math.random() * 3);
-        orbs.push({ x: W + 10, y: ZONES[zone] });
-        orbsSpawned++; lastSpawn = now;
-      }
-
-      const runnerY = ZONES[1] + (H * 0.2) * Math.sin(elapsed * 0.003);
-
-      orbs = orbs.filter(orb => {
-        orb.x -= 200 / 60;
-        const dx = (RUNNER_X + 14) - orb.x, dy = runnerY - orb.y;
-        if (Math.sqrt(dx*dx + dy*dy) < 26) {
-          collected++;
-          document.getElementById('l4-orb-count').textContent = '⚡ ' + collected + ' / 50';
-          popups.push({ x: orb.x, y: orb.y - 16, text: '✨', age: 0, life: 30 });
-          return false;
-        }
-        if (orb.x < -20) return false;
-        ctx.fillStyle = '#FFD700'; ctx.globalAlpha = 0.92;
-        ctx.beginPath(); ctx.arc(orb.x, orb.y, 12, 0, Math.PI*2); ctx.fill();
-        ctx.strokeStyle = 'rgba(255,215,0,0.3)'; ctx.lineWidth = 6;
-        ctx.beginPath(); ctx.arc(orb.x, orb.y, 18, 0, Math.PI*2); ctx.stroke();
-        ctx.globalAlpha = 1;
+      if (!startTime) { startTime=now; lastSpawn=now; }
+      const elapsed=now-startTime, progress=Math.min(elapsed/DURATION,1);
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle='#0a1528'; ctx.fillRect(0,0,W,H);
+      for (let i=0;i<W;i+=4) { const a=0.04+0.03*Math.sin(i*0.05+elapsed*0.002); ctx.fillStyle='rgba(76,175,80,'+a+')'; ctx.fillRect(i,0,2,H); }
+      if (now-lastSpawn>200&&orbsSpawned<TOTAL) { orbs.push({x:W+10,y:ZONES[Math.floor(Math.random()*3)]}); orbsSpawned++; lastSpawn=now; }
+      const runnerY=ZONES[1]+(H*0.2)*Math.sin(elapsed*0.003);
+      orbs=orbs.filter(orb=>{
+        orb.x-=200/60;
+        const dx=(RUNNER_X+14)-orb.x,dy=runnerY-orb.y;
+        if (Math.sqrt(dx*dx+dy*dy)<26) { collected++; document.getElementById('l4-orb-count').textContent='\u26A1 '+collected+' / 50'; popups.push({x:orb.x,y:orb.y-16,text:'\u2728',age:0,life:30}); return false; }
+        if (orb.x<-20) return false;
+        ctx.fillStyle='#FFD700'; ctx.globalAlpha=0.92; ctx.beginPath(); ctx.arc(orb.x,orb.y,12,0,Math.PI*2); ctx.fill();
+        ctx.strokeStyle='rgba(255,215,0,0.3)'; ctx.lineWidth=6; ctx.beginPath(); ctx.arc(orb.x,orb.y,18,0,Math.PI*2); ctx.stroke(); ctx.globalAlpha=1;
         return true;
       });
-
-      ctx.globalAlpha = 1;
-      ctx.shadowColor = 'rgba(255,255,255,0.9)'; ctx.shadowBlur = 14;
-      ctx.font = '26px serif'; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
-      ctx.fillText(RUNNER_EMOJI, RUNNER_X - 2, runnerY);
-      ctx.shadowBlur = 0;
-
-      popups = popups.filter(p => {
-        p.age++;
-        ctx.globalAlpha = Math.max(0, 1 - p.age / p.life);
-        ctx.font = '18px serif'; ctx.textAlign = 'center';
-        ctx.fillText(p.text, p.x, p.y - p.age * 0.5);
-        ctx.globalAlpha = 1;
-        return p.age < p.life;
-      });
-      ctx.textAlign = 'left';
-
-      document.getElementById('l4-timer').style.width = Math.round((1-progress)*100) + '%';
-
-      const msgEl = document.getElementById('l4-msg');
-      msgs.forEach(m => {
-        if (elapsed > m.time && !msgShown.includes(m.time)) {
-          msgShown.push(m.time);
-          msgEl.style.opacity = '0';
-          setTimeout(() => { msgEl.textContent = m.text; msgEl.style.opacity = '1'; }, 300);
-          setTimeout(() => { msgEl.style.opacity = '0'; }, 2000);
-        }
-      });
-
-      if (progress >= 1) { cancelAnimationFrame(rafId); setTimeout(showCard, 600); return; }
-      rafId = requestAnimationFrame(frame);
+      ctx.globalAlpha=1; ctx.shadowColor='rgba(255,255,255,0.9)'; ctx.shadowBlur=14; ctx.font='26px serif'; ctx.textBaseline='middle'; ctx.textAlign='left'; ctx.fillText(RUNNER_EMOJI,RUNNER_X-2,runnerY); ctx.shadowBlur=0;
+      popups=popups.filter(p=>{ p.age++; ctx.globalAlpha=Math.max(0,1-p.age/p.life); ctx.font='18px serif'; ctx.textAlign='center'; ctx.fillText(p.text,p.x,p.y-p.age*0.5); ctx.globalAlpha=1; return p.age<p.life; });
+      ctx.textAlign='left';
+      document.getElementById('l4-timer').style.width=Math.round((1-progress)*100)+'%';
+      const msgEl=document.getElementById('l4-msg');
+      msgs.forEach(m=>{ if (elapsed>m.time&&!msgShown.includes(m.time)) { msgShown.push(m.time); msgEl.style.opacity='0'; setTimeout(()=>{msgEl.textContent=m.text;msgEl.style.opacity='1';},300); setTimeout(()=>{msgEl.style.opacity='0';},2000); }});
+      if (progress>=1) { cancelAnimationFrame(rafId); setTimeout(showCard,600); return; }
+      rafId=requestAnimationFrame(frame);
     }
-    rafId = requestAnimationFrame(frame);
-  }); }); // double rAF — layout complete
+    rafId=requestAnimationFrame(frame);
+  }); }); // double rAF ensures layout complete
 })();
 
-/* ════════════════════════════════════════
-   PERSONA CARD REVEAL
-   ════════════════════════════════════════ */
+/* ── Card Reveal ── */
 function showCard() {
   goTo('card');
+  setTimeout(renderCardScreenComponents, 100);
   setTimeout(() => {
     const persona = PERSONAS[s.personaKey];
     if (!persona) return;
-    const g1 = persona.gradient[0], g2 = persona.gradient[1];
-    const wrap = document.getElementById('persona-card-wrap');
-
+    const g1=persona.gradient[0], g2=persona.gradient[1];
+    const wrap=document.getElementById('persona-card-wrap');
     wrap.innerHTML = `
       <div class="persona-card card-reveal" id="persona-card">
         <div class="persona-card-header" style="background:linear-gradient(135deg,${g1},${g2});">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;width:100%;margin-bottom:14px;">
             <div style="font-size:10px;color:rgba(255,255,255,0.65);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;">iom Bioworks</div>
-            <div style="font-size:10px;color:rgba(255,255,255,0.55);letter-spacing:0.06em;">Gut Persona</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.55);">Gut Persona</div>
           </div>
           <div style="font-size:54px;margin-bottom:10px;">${persona.emoji}</div>
           <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:white;font-weight:600;margin-bottom:4px;">${persona.name}</div>
@@ -270,167 +195,94 @@ function showCard() {
             <div style="font-size:12px;color:var(--muted);">out of 100</div>
           </div>
           <div>
-            <div class="stat-bar-row">
-              <div class="stat-bar-label">Fiber</div>
-              <div class="stat-bar-wrap"><div class="stat-bar-fill" id="bar-fiber"></div></div>
-              <div class="stat-bar-val" id="val-fiber">0</div>
-            </div>
-            <div class="stat-bar-row">
-              <div class="stat-bar-label">Stress</div>
-              <div class="stat-bar-wrap"><div class="stat-bar-fill" id="bar-stress" style="background:var(--pink);"></div></div>
-              <div class="stat-bar-val" id="val-stress">0</div>
-            </div>
-            <div class="stat-bar-row" style="margin-bottom:0;">
-              <div class="stat-bar-label">Diversity</div>
-              <div class="stat-bar-wrap"><div class="stat-bar-fill" id="bar-div"></div></div>
-              <div class="stat-bar-val" id="val-div">0</div>
-            </div>
+            <div class="stat-bar-row"><div class="stat-bar-label">Fiber</div><div class="stat-bar-wrap"><div class="stat-bar-fill" id="bar-fiber"></div></div><div class="stat-bar-val" id="val-fiber">0</div></div>
+            <div class="stat-bar-row"><div class="stat-bar-label">Stress</div><div class="stat-bar-wrap"><div class="stat-bar-fill" id="bar-stress" style="background:var(--pink);"></div></div><div class="stat-bar-val" id="val-stress">0</div></div>
+            <div class="stat-bar-row" style="margin-bottom:0;"><div class="stat-bar-label">Diversity</div><div class="stat-bar-wrap"><div class="stat-bar-fill" id="bar-div"></div></div><div class="stat-bar-val" id="val-div">0</div></div>
           </div>
         </div>
         <div class="persona-card-footer">
           <p style="font-size:13px;color:var(--navy);line-height:1.6;margin-bottom:5px;font-weight:500;">${persona.line1}</p>
           <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px;">${persona.line2}</p>
-          <a href="https://iombio.com" target="_blank"
-             style="font-size:11px;color:var(--pink);font-weight:500;text-decoration:none;">
-            iombio.com ↗
-          </a>
+          <a href="https://iombio.com" target="_blank" style="font-size:11px;color:var(--pink);font-weight:500;text-decoration:none;">iombio.com &#x2197;</a>
         </div>
       </div>`;
-
-    wrap.style.opacity = '1';
-
-    let n = 0;
-    const scoreEl = document.getElementById('score-display');
-    const iv = setInterval(() => {
-      n = Math.min(n + 2, s.finalScore || 0);
-      if (scoreEl) scoreEl.textContent = n;
-      if (n >= (s.finalScore || 0)) clearInterval(iv);
-    }, 28);
-
-    setTimeout(() => {
-      const fiber  = s.fiberLevel   || 0;
-      const stress = s.stressIndex  || 0;
-      const divers = s.gutDiversity || 0;
-      document.getElementById('bar-fiber').style.width  = fiber  + '%';
-      document.getElementById('val-fiber').textContent  = fiber;
-      document.getElementById('bar-stress').style.width = stress + '%';
-      document.getElementById('val-stress').textContent = stress;
-      document.getElementById('bar-div').style.width    = divers + '%';
-      document.getElementById('val-div').textContent    = divers;
-    }, 700);
-
+    wrap.style.opacity='1';
+    let n=0; const scoreEl=document.getElementById('score-display');
+    const iv=setInterval(()=>{ n=Math.min(n+2,s.finalScore||0); if(scoreEl) scoreEl.textContent=n; if(n>=(s.finalScore||0)) clearInterval(iv); },28);
+    setTimeout(()=>{
+      document.getElementById('bar-fiber').style.width=(s.fiberLevel||0)+'%'; document.getElementById('val-fiber').textContent=s.fiberLevel||0;
+      document.getElementById('bar-stress').style.width=(s.stressIndex||0)+'%'; document.getElementById('val-stress').textContent=s.stressIndex||0;
+      document.getElementById('bar-div').style.width=(s.gutDiversity||0)+'%'; document.getElementById('val-div').textContent=s.gutDiversity||0;
+    },700);
     fireWebhook();
   }, 450);
 }
 
-/* ════════════════════════════════════════
-   CARD → IMAGE (html2canvas)
-   Used by both WhatsApp and Instagram share
-   ════════════════════════════════════════ */
+/* ── Image capture helper ── */
 function captureCard() {
   return new Promise((resolve, reject) => {
     const card = document.getElementById('persona-card');
-    if (!card) { reject(new Error('Card not found')); return; }
-    if (typeof html2canvas === 'undefined') { reject(new Error('html2canvas not loaded')); return; }
-
-    html2canvas(card, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: null,
-      logging: false
-    }).then(canvas => {
-      canvas.toBlob(blob => {
-        if (blob) resolve(blob);
-        else reject(new Error('toBlob failed'));
-      }, 'image/png');
-    }).catch(reject);
+    if (!card || typeof html2canvas === 'undefined') { reject(new Error('Not ready')); return; }
+    html2canvas(card, { scale:2, useCORS:true, allowTaint:true, backgroundColor:null, logging:false })
+      .then(canvas => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('toBlob failed')), 'image/png'))
+      .catch(reject);
   });
 }
 
 function setButtonLoading(btnId, loading) {
   const btn = document.getElementById(btnId);
   if (!btn) return;
-  if (loading) {
-    btn.dataset.originalText = btn.innerHTML;
-    btn.innerHTML = '<span class="share-loading"></span>Preparing...';
-    btn.disabled = true;
-  } else {
-    btn.innerHTML = btn.dataset.originalText || btn.innerHTML;
-    btn.disabled = false;
-  }
+  if (loading) { btn.dataset.orig = btn.innerHTML; btn.innerHTML = '<span class="share-loading"></span>Preparing...'; btn.disabled=true; }
+  else { btn.innerHTML = btn.dataset.orig || btn.innerHTML; btn.disabled=false; }
 }
 
-/* ════════════════════════════════════════
-   WHATSAPP SHARE
-   ════════════════════════════════════════ */
+/* ── WhatsApp Share — rich card link + image ── */
 document.getElementById('btn-wa').addEventListener('click', async () => {
-  const persona  = PERSONAS[s.personaKey];
-  const gameUrl  = window.location.origin;
+  const persona = PERSONAS[s.personaKey];
+  const cardUrl = buildCardUrl();
   const shareText =
-    `I just discovered I'm a ${persona.name} 🎴\n` +
-    `My Gut Score is ${s.finalScore}/100.\n\n` +
-    `${persona.line1}\n\n` +
-    `Find out your Gut Persona →\n${gameUrl}\n\n` +
-    `#GutJourney #iomBioworks`;
+    'I just discovered I am a ' + persona.name + '\n' +
+    'My Gut Score is ' + (s.finalScore||0) + '/100.\n\n' +
+    persona.line1 + '\n\n' +
+    'See my Gut Persona card ->\n' + cardUrl + '\n\n' +
+    '#GutJourney #iomBioworks';
 
-  /* Try native image share first (works on mobile) */
   if (navigator.share && navigator.canShare) {
     setButtonLoading('btn-wa', true);
     try {
       const blob = await captureCard();
-      const file = new File([blob], 'my-gut-persona.png', { type: 'image/png' });
-      const shareData = { files: [file], text: shareText };
-
-      if (navigator.canShare(shareData)) {
-        await navigator.share(shareData);
-        setButtonLoading('btn-wa', false);
-        return;
-      }
-    } catch (err) {
-      /* User cancelled or image share not supported — fall through to text share */
-    }
+      const file = new File([blob], 'my-gut-persona.png', { type:'image/png' });
+      const shareData = { files:[file], text:shareText };
+      if (navigator.canShare(shareData)) { await navigator.share(shareData); setButtonLoading('btn-wa', false); return; }
+    } catch(e) { /* fall through */ }
     setButtonLoading('btn-wa', false);
   }
-
-  /* Fallback: open WhatsApp with pre-filled text */
   window.open('https://wa.me/?text=' + encodeURIComponent(shareText), '_blank');
 });
 
-/* ════════════════════════════════════════
-   INSTAGRAM SHARE
-   ════════════════════════════════════════ */
+/* ── Instagram Share — download image ── */
 document.getElementById('btn-ig').addEventListener('click', async () => {
   setButtonLoading('btn-ig', true);
-
   try {
     const blob = await captureCard();
-    const url  = URL.createObjectURL(blob);
-
-    /* Trigger download */
+    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href     = url;
-    a.download = 'my-gut-persona-' + (s.personaKey || 'card') + '.png';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 2000);
-
-    showToast('🎴 Card saved! Open Instagram → Stories → add image', 4000);
-  } catch (err) {
-    showToast('📸 Screenshot the card and share to Instagram Stories!', 3500);
-  }
-
+    a.href=url; a.download='my-gut-persona-'+(s.personaKey||'card')+'.png';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url), 2000);
+    showToast('Card saved! Open Instagram -> Stories -> add image', 4000);
+  } catch(e) { showToast('Screenshot the card and share to Instagram Stories!', 3500); }
   setButtonLoading('btn-ig', false);
 });
 
-/* ════════════════════════════════════════
-   MAKE.COM WEBHOOK
-   ════════════════════════════════════════ */
+/* ── Make.com Webhook ── */
 function fireWebhook() {
-  const channel = new URLSearchParams(window.location.search).get('utm_source') || 'direct';
+  const savedState = GS.get();
+  const channel = savedState.channel || new URLSearchParams(window.location.search).get('utm_source') || 'direct';
+  const cardUrl = buildCardUrl();
   const payload = {
     player_name:          s.name,
+    whatsapp_number:      s.whatsapp_number || '',
     timestamp:            new Date().toISOString(),
     channel:              channel,
     avatar:               s.avatar,
@@ -455,16 +307,11 @@ function fireWebhook() {
     persona:              s.personaKey,
     boss:                 s.boss,
     levels_reached:       s.levels_reached   || 4,
-    game_completed:       true
+    game_completed:       true,
+    card_url:             cardUrl
   };
-
-  /* ← Replace this with your real Make.com webhook URL */
   const webhookUrl = 'https://hook.eu1.make.com/PLACEHOLDER_REPLACE_WITH_REAL_URL';
-  fetch(webhookUrl, {
-    method:  'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body:    JSON.stringify(payload)
-  }).catch(() => {});
+  fetch(webhookUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) }).catch(()=>{});
 }
 </script>
 </body>

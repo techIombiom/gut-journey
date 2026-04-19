@@ -12,7 +12,8 @@
 <div id="gut-app">
   <div id="screen-recommend" class="screen active">
 
-    <div id="hero-section" style="padding:28px 24px 20px;flex-shrink:0;">
+    <div id="hdr-recommend"></div>
+    <div id="hero-section" style="padding:20px 24px 20px;flex-shrink:0;">
       <div style="font-size:11px;font-weight:500;color:var(--pink);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">Your Gut Prescription</div>
       <h2 class="serif" style="font-size:28px;color:var(--navy);line-height:1.25;margin-bottom:6px;font-weight:600;">Here's what <span id="rec-name">your</span> gut<br>actually <em style="color:var(--pink);">needs</em></h2>
       <div id="persona-pill" style="display:inline-flex;align-items:center;gap:6px;background:#F0EBE3;padding:5px 12px;border-radius:20px;font-size:12px;color:var(--navy);font-weight:500;margin-top:6px;"></div>
@@ -41,6 +42,7 @@
 <script src="js/state.js"></script>
 <script src="js/constants.js"></script>
 <script src="js/scoring.js"></script>
+<script src="js/components.js"></script>
 <script>
 const s = GS.get();
 if (!s.name || !s.personaKey) window.location.href = 'index.html';
@@ -94,6 +96,12 @@ buildProductCard(
 
 const primaryProduct = PRODUCTS[primaryKey];
 const secondaryProduct = PRODUCTS[secondaryKey];
+/* Render header + footer */
+const hr = document.getElementById('hdr-recommend');
+if (hr) hr.outerHTML = renderHeader({ showBack:true, backHref:'results.html', backLabel:'Back to card' });
+const fr = document.getElementById('footer-recommend');
+if (fr) fr.outerHTML = renderFooter();
+
 if (primaryProduct && primaryProduct.type === 'prebiotic' && secondaryProduct && secondaryProduct.type === 'test') {
   document.getElementById('edu-strip').style.display = 'block';
 }

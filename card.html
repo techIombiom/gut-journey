@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<!--
+  DYNAMIC OPEN GRAPH META TAGS
+  These are read by WhatsApp, Instagram, Twitter when the link is shared.
+  They get overwritten by the inline script below using URL parameters.
+  Default values shown here — script replaces them on load.
+-->
+<meta property="og:type"        content="website">
+<meta property="og:site_name"   content="iom Bioworks — Gut Journey">
+<meta property="og:title"       id="og-title"       content="I just discovered my Gut Persona 🎴">
+<meta property="og:description" id="og-description" content="Take the 3-minute Gut Journey and find out yours.">
+<meta property="og:image"       id="og-image"       content="https://gut-journey.iombio.com/assets/og/default-card.png">
+<meta property="og:url"         id="og-url"         content="https://gut-journey.iombio.com">
+<meta name="twitter:card"       content="summary_large_image">
+<meta name="twitter:title"      id="tw-title"       content="I just discovered my Gut Persona 🎴">
+<meta name="twitter:description" id="tw-desc"       content="Take the 3-minute Gut Journey and find out yours.">
+<meta name="twitter:image"      id="tw-image"       content="https://gut-journey.iombio.com/assets/og/default-card.png">
+
+<title id="page-title">My Gut Persona — iom Bioworks</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+  body { background: #1B2B4B; }
+  #gut-app { background: #1B2B4B; }
+
+  .share-card-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 20px 40px;
+    background: var(--navy);
+  }
+
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 320px;
+    margin-bottom: 24px;
+  }
+
+  .logo-text-light {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+  }
+
+  .from-badge {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+  }
+
+  @keyframes cardIn {
+    0%  { transform: scale(0.85) translateY(20px); opacity: 0; }
+    100%{ transform: scale(1)    translateY(0);    opacity: 1; }
+  }
+  .card-in { animation: cardIn 0.6s cubic-bezier(0.34,1.4,0.64,1) forwards; }
+
+  .cta-section {
+    width: 100%;
+    max-width: 320px;
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.4s ease 0.5s, transform 0.4s ease 0.5s;
+  }
+  .cta-section.visible { opacity: 1; transform: translateY(0); }
+
+  .cta-label {
+    text-align: center;
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 4px;
+  }
+
+  .not-found {
+    color: rgba(255,255,255,0.6);
+    text-align: center;
+    font-size: 14px;
+    margin-top: 40px;
+    line-height: 1.7;
+  }
+</style>
+</head>
+<body>
+<div id="gut-app">
+<div class="share-card-page">
+
+  <div id="hdr-card-share"></div>
+  <div style="display:flex;justify-content:center;margin:8px 0 0;"><div class="from-badge" id="from-badge"></div></div>
+
+  <div id="card-container" style="width:100%;max-width:320px;"></div>
+
+  <div class="cta-section" id="cta-section">
+    <p class="cta-label" id="cta-label">Discover your own Gut Persona</p>
+    <button class="btn-primary" onclick="window.location.href='/'">
+      Start My Gut Journey 🚀
+    </button>
+    <a href="https://iombio.com" target="_blank"
+       style="text-align:center;font-size:12px;color:rgba(255,255,255,0.35);text-decoration:none;margin-top:4px;">
+      iombio.com ↗
+    </a>
+  </div>
+
+</div>
+  <div id="footer-card-share"></div>
+</div>
+
+<script src="js/state.js"></script>
+<script src="js/constants.js"></script>
+<script src="js/components.js"></script>
+<script>
+
+/* ── Read URL params ── */
+/* Render header + footer */
+setTimeout(() => {
+  const hh = document.getElementById('hdr-card-share');
+  if (hh) hh.outerHTML = renderHeader({ dark:false });
+  const ff = document.getElementById('footer-card-share');
+  if (ff) ff.outerHTML = renderFooter();
+}, 0);
+
+const params  = new URLSearchParams(window.location.search);
+const pKey    = params.get('p')  || '';  /* persona key */
+const score   = parseInt(params.get('s') || '0', 10);
+const name    = decodeURIComponent(params.get('n') || 'Someone');
+const fiber   = parseInt(params.get('f') || '0', 10);
+const stress  = parseInt(params.get('st') || '0', 10);
+const divers  = parseInt(params.get('d') || '0', 10);
+
+const persona = PERSONAS[pKey];
+
+if (!persona) {
+  document.getElementById('card-container').innerHTML =
+    '<div class="not-found">This Gut Persona card has expired or the link is invalid.<br><br>' +
+    '<a href="/" style="color:#E91E8C;">Play the Gut Journey →</a></div>';
+} else {
+
+  /* ── Build the card ── */
+  const g1 = persona.gradient[0], g2 = persona.gradient[1];
+  const container = document.getElementById('card-container');
+
+  container.innerHTML = `
+    <div class="persona-card card-in" id="share-card">
+      <div class="persona-card-header" style="background:linear-gradient(135deg,${g1},${g2});">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;width:100%;margin-bottom:14px;">
+          <div style="font-size:10px;color:rgba(255,255,255,0.65);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;">iom Bioworks</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.55);letter-spacing:0.06em;">Gut Persona</div>
+        </div>
+        <div style="font-size:54px;margin-bottom:10px;">${persona.emoji}</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:white;font-weight:600;margin-bottom:4px;">${persona.name}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.7);">${name}'s Gut Profile</div>
+      </div>
+      <div class="persona-card-body">
+        <div style="text-align:center;margin-bottom:18px;">
+          <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Gut Score</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:60px;color:var(--pink);font-weight:600;line-height:1;" id="score-num">0</div>
+          <div style="font-size:12px;color:var(--muted);">out of 100</div>
+        </div>
+        <div>
+          <div class="stat-bar-row">
+            <div class="stat-bar-label">Fiber</div>
+            <div class="stat-bar-wrap"><div class="stat-bar-fill" id="bar-fiber"></div></div>
+            <div class="stat-bar-val">${fiber}</div>
+          </div>
+          <div class="stat-bar-row">
+            <div class="stat-bar-label">Stress</div>
+            <div class="stat-bar-wrap"><div class="stat-bar-fill" id="bar-stress" style="background:var(--pink);"></div></div>
+            <div class="stat-bar-val">${stress}</div>
+          </div>
+          <div class="stat-bar-row" style="margin-bottom:0;">
+            <div class="stat-bar-label">Diversity</div>
+            <div class="stat-bar-wrap"><div class="stat-bar-fill" id="bar-div"></div></div>
+            <div class="stat-bar-val">${divers}</div>
+          </div>
+        </div>
+      </div>
+      <div class="persona-card-footer">
+        <p style="font-size:13px;color:var(--navy);line-height:1.6;margin-bottom:5px;font-weight:500;">${persona.line1}</p>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px;">${persona.line2}</p>
+        <a href="https://iombio.com" target="_blank"
+           style="font-size:11px;color:var(--pink);font-weight:500;text-decoration:none;">
+          iombio.com ↗
+        </a>
+      </div>
+    </div>`;
+
+  /* ── Animate score ── */
+  let n = 0;
+  const scoreEl = document.getElementById('score-num');
+  const iv = setInterval(() => {
+    n = Math.min(n + 2, score);
+    if (scoreEl) scoreEl.textContent = n;
+    if (n >= score) clearInterval(iv);
+  }, 25);
+
+  /* ── Animate bars ── */
+  setTimeout(() => {
+    document.getElementById('bar-fiber').style.width  = fiber  + '%';
+    document.getElementById('bar-stress').style.width = stress + '%';
+    document.getElementById('bar-div').style.width    = divers + '%';
+    document.getElementById('cta-section').classList.add('visible');
+  }, 500);
+
+  /* ── From badge ── */
+  const fromBadge = document.getElementById('from-badge');
+  if (name && name !== 'Someone') {
+    fromBadge.textContent = 'Shared by ' + name;
+  }
+
+  /* ── CTA label ── */
+  document.getElementById('cta-label').textContent =
+    'What\'s your Gut Persona, ' + name.split(' ')[0] + '?';
+
+  /* ── Update Open Graph meta tags dynamically ── */
+  /* Note: OG tags are read by scrapers at request time, not by JS.
+     For proper OG previews you need server-side rendering.
+     These JS updates work for direct browser visits only.
+     See README for Vercel Edge Function approach for full OG support. */
+  const ogTitle = name + ' is a ' + persona.name + ' 🎴 — Gut Score ' + score + '/100';
+  const ogDesc  = persona.line1 + ' ' + persona.line2 + ' Find out your Gut Persona in 3 minutes.';
+  const ogImage = 'https://gut-journey.iombio.com/assets/og/' + pKey + '.png';
+
+  document.getElementById('og-title').setAttribute('content', ogTitle);
+  document.getElementById('og-description').setAttribute('content', ogDesc);
+  document.getElementById('og-image').setAttribute('content', ogImage);
+  document.getElementById('tw-title').setAttribute('content', ogTitle);
+  document.getElementById('tw-desc').setAttribute('content', ogDesc);
+  document.getElementById('tw-image').setAttribute('content', ogImage);
+  document.getElementById('page-title').textContent = ogTitle;
+}
+</script>
+</body>
+</html>

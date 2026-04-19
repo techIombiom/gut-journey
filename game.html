@@ -189,11 +189,13 @@
     </div>
   </div>
 
+  <div id="footer-game"></div>
 </div>
 
 <script src="js/state.js"></script>
 <script src="js/constants.js"></script>
 <script src="js/scoring.js"></script>
+<script src="js/components.js"></script>
 
 <script>
 
@@ -555,6 +557,17 @@ document.addEventListener('DOMContentLoaded', function () {
   // redirect if no session
   const state = GS.get();
   if (!state.name) { window.location.href = 'index.html'; return; }
+
+  /* Render shared headers */
+  ['morning','lunch','afternoon','dinner'].forEach((s,i) => {
+    const pills = ['Morning · 1 of 4','Lunch · 2 of 4','Afternoon · 3 of 4','Evening · 4 of 4'];
+    const backs = ['index.html','#','#','#'];
+    const backLabels = ['Back','Back','Back','Back'];
+    const el = document.getElementById('hdr-'+s);
+    if (el) el.outerHTML = renderHeader({ pill:pills[i], showMute:true, showBack:true, backHref:backs[i], backLabel:backLabels[i] });
+  });
+  const fg = document.getElementById('footer-game');
+  if (fg) fg.outerHTML = renderFooter();
 
   // personalise name
   const nameEl = document.getElementById('morning-name');
