@@ -125,11 +125,11 @@ const PRODUCTS = {
   sleepeasy:   { name: 'SleepEasy',   url: 'https://iombio.com/shop/prebiotics/sleep-easy',           img: 'assets/products/sleepeasy.png',   type: 'prebiotic' },
   zenup:       { name: 'ZenUp',       url: 'https://iombio.com/shop/prebiotics/zen-up',               img: 'assets/products/zenup.png',       type: 'prebiotic' },
   gutsteady:   { name: 'GutSteady',   url: 'https://iombio.com/shop/prebiotics/gut-steady',           img: 'assets/products/gutsteady.png',   type: 'prebiotic' },
-  gutease:     { name: 'GutEasy',     url: 'https://iombio.com/shop/prebiotics/gut-ease',             img: 'assets/products/gutease.png',     type: 'prebiotic' },
-  dualsoothe:  { name: 'DualSoothe',  url: 'https://iombio.com/shop/prebiotics/dual-soothe/',         img: 'assets/products/dualsoothe.png',  type: 'prebiotic' },
-  gut360:      { name: 'Gut360',      url: 'https://iombio.com/shop/gut-microbiome-tests/gut-360/',   img: 'assets/products/gut360.png',      type: 'test' },
-  gutsens:     { name: 'GutSenS',     url: 'https://iombio.com/shop/gut-microbiome-tests/gut-sens/',  img: 'assets/products/gutsens.png',     type: 'test' },
-  gutheal:     { name: 'GutHeal',     url: 'https://iombio.com/shop/gut-microbiome-tests/gut-heal',   img: 'assets/products/gutheal.png',     type: 'test' }
+  gutease:     { name: 'GutEasy',     url: 'https://iombio.com/shop/prebiotics/gut-ease',             img: 'https://iombio.com/wp-content/uploads/2026/01/Gut_Easy_Bundle.png',     type: 'prebiotic' },
+  dualsoothe:  { name: 'DualSoothe',  url: 'https://iombio.com/shop/prebiotics/dual-soothe/',         img: 'https://iombio.com/wp-content/uploads/2026/01/DualSoothe_Bundle.png',  type: 'prebiotic' },
+  gut360:      { name: 'Gut360',      url: 'https://iombio.com/shop/gut-microbiome-tests/gut-360/',   img: 'https://iombio.com/wp-content/uploads/2025/11/Gut360.png',      type: 'test' },
+  gutsens:     { name: 'GutSenS',     url: 'https://iombio.com/shop/gut-microbiome-tests/gut-sens/',  img: 'https://iombio.com/wp-content/uploads/2025/11/Gut_Sens.png',     type: 'test' },
+  gutheal:     { name: 'GutHeal',     url: 'https://iombio.com/shop/gut-microbiome-tests/gut-heal',   img: 'https://iombio.com/wp-content/uploads/2026/01/GutHeal1.png',     type: 'test' }
 };
 
 const PRODUCT_WHY = {
