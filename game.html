@@ -28,7 +28,7 @@
   </div>
 
   <!-- RUNNER 1 -->
-  <div id="screen-runner1" class="screen" style="background:var(--runner-bg);flex-direction:column;">
+  <div id="screen-runner1" class="screen" style="background:var(--runner-bg);flex-direction:column;height:100%;">
     <div class="runner-header">
       <div class="runner-label">Your gut at 6am</div>
       <div class="orb-count" id="orb-count-display">⚡ 0 / 20</div>
@@ -36,7 +36,7 @@
     <div style="background:var(--runner-bg);padding:0 18px 10px;flex-shrink:0;">
       <div class="timer-bar-wrap"><div class="timer-bar-fill" id="timer-bar" style="width:100%;"></div></div>
     </div>
-    <div style="position:relative;flex:1;overflow:hidden;">
+    <div style="position:relative;flex:1;overflow:hidden;min-height:0;">
       <canvas id="runner-canvas"></canvas>
       <div class="prerunner-overlay visible" id="prerunner-overlay">
         <div class="prerunner-icon">🏃</div>
@@ -82,7 +82,7 @@
   </div>
 
   <!-- RUNNER 2 -->
-  <div id="screen-runner2" class="screen" style="background:#1a1a0d;flex-direction:column;">
+  <div id="screen-runner2" class="screen" style="background:#1a1a0d;flex-direction:column;height:100%;">
     <div class="runner-header" style="background:#1a1a0d;">
       <div class="runner-label">Your gut at 1pm</div>
       <div class="orb-count" id="orb-count-display-2">⚡ 0 / 30</div>
@@ -90,7 +90,7 @@
     <div style="background:#1a1a0d;padding:0 18px 10px;flex-shrink:0;">
       <div class="timer-bar-wrap" style="background:#1a1a0d;"><div class="timer-bar-fill" id="timer-bar-2" style="width:100%;"></div></div>
     </div>
-    <div style="position:relative;flex:1;overflow:hidden;">
+    <div style="position:relative;flex:1;overflow:hidden;min-height:0;">
       <canvas id="runner-canvas-2"></canvas>
       <div class="prerunner-overlay visible" id="prerunner-overlay-2">
         <div class="prerunner-icon">☀️</div>
@@ -136,7 +136,7 @@
   </div>
 
   <!-- RUNNER 3 -->
-  <div id="screen-runner3" class="screen" style="background:#0d2010;flex-direction:column;">
+  <div id="screen-runner3" class="screen" style="background:#0d2010;flex-direction:column;height:100%;">
     <div class="runner-header" style="background:#0d2010;">
       <div class="runner-label">Your gut at 4pm</div>
       <div class="orb-count" id="orb-count-display-3">⚡ 0 / 40</div>
@@ -144,7 +144,7 @@
     <div style="background:#0d2010;padding:0 18px 10px;flex-shrink:0;">
       <div class="timer-bar-wrap" style="background:#0d2010;"><div class="timer-bar-fill" id="timer-bar-3" style="width:100%;"></div></div>
     </div>
-    <div style="position:relative;flex:1;overflow:hidden;">
+    <div style="position:relative;flex:1;overflow:hidden;min-height:0;">
       <canvas id="runner-canvas-3"></canvas>
       <div class="prerunner-overlay visible" id="prerunner-overlay-3">
         <div class="prerunner-icon">🔬</div>
@@ -302,12 +302,15 @@ function runLevel(canvasId, timerId, countId, flashId, summaryId,
 
   const canvas    = document.getElementById(canvasId);
   const container = canvas.parentElement;
-  canvas.width  = container.offsetWidth  || 375;
-  canvas.height = container.offsetHeight || 300;
+  const appEl     = document.getElementById("gut-app");
+  const headerH   = 65;
+  const W = container.offsetWidth  || appEl.offsetWidth  || 375;
+  const H = Math.max((appEl.offsetHeight || window.innerHeight) - headerH, 260);
+  canvas.width  = W;
+  canvas.height = H;
   const ctx = canvas.getContext('2d');
 
   const { speed, totalOrbs, spawnInterval, duration, bgColor, flashTime } = config;
-  const W = canvas.width, H = canvas.height;
   const ZONES = [H * 0.22, H * 0.5, H * 0.78];
 
   let runnerZone = 1, runnerY = ZONES[1], targetY = ZONES[1], autoReturnTimer = null;
