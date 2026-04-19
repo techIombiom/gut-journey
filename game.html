@@ -196,6 +196,7 @@
 <script src="js/scoring.js"></script>
 <script src="js/runner.js"></script>
 <script>
+document.addEventListener('DOMContentLoaded', function() {
 const state = GS.get();
 if (!state.name) window.location.href = 'index.html';
 
@@ -411,6 +412,6 @@ function makePreRunnerFn(overlayId, countId, runFn) {
 const startPreRunner = makePreRunnerFn('prerunner-overlay','prerunner-count', () => {});
 const startPreRunner2 = makePreRunnerFn('prerunner-overlay-2','prerunner-count-2', () => {});
 const startPreRunner3 = makePreRunnerFn('prerunner-overlay-3','prerunner-count-3', () => {});
-</script>
+});</script>
 </body>
 </html>
