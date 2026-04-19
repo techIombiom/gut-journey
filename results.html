@@ -42,12 +42,16 @@
   </div>
 
   <div id="screen-card" class="screen" style="background:var(--navy);overflow-y:auto;">
-    <div style="padding:16px 20px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:#0d1f3c;">
-      <div style="width:36px;"></div>
-      <a href="https://iombio.com" target="_blank" style="line-height:0;">
-        <img src="https://iombio.com/wp-content/uploads/2025/11/IOM_WHITE.png" alt="iom Bioworks" style="height:26px;width:auto;" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><span style="display:none;font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.6);">iom Bioworks</span>
-      </a>
-      <button class="mute-btn" id="mute-btn" style="color:white;opacity:0.5;">🔊</button>
+    <div class="header" style="background:#0d1f3c;border-bottom:1px solid rgba(255,255,255,0.06);">
+      <div class="header-left"><div style="width:36px;"></div></div>
+      <div class="header-mid">
+        <a href="https://iombio.com" target="_blank" style="line-height:0;">
+          <img src="https://iombio.com/wp-content/uploads/2025/11/IOM_WHITE.png" alt="iom Bioworks" style="height:24px;width:auto;" onerror="this.style.display='none';">
+        </a>
+      </div>
+      <div class="header-right">
+        <button class="mute-btn" id="mute-btn" style="color:white;opacity:0.5;">🔊</button>
+      </div>
     </div>
     <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:0 20px 36px;">
       <div id="persona-card-wrap" style="opacity:0;width:100%;max-width:320px;margin-bottom:24px;"></div>
