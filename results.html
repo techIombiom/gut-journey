@@ -140,14 +140,15 @@ function restartGame() { GS.clear(); window.location.href = 'index.html'; }
   const appEl  = document.getElementById('gut-app');
 
   function sizeCanvas() {
-    const W = wrap.offsetWidth  || appEl.offsetWidth  || 375;
-    const H = wrap.offsetHeight || (appEl.offsetHeight - 65) || 400;
+    const r = wrap.getBoundingClientRect();
+    const W = Math.round(r.width)  || 375;
+    const H = Math.round(r.height) || (window.innerHeight - 65) || 500;
     canvas.width  = W;
-    canvas.height = Math.max(H, 260);
+    canvas.height = Math.max(H, 300);
     return { W: canvas.width, H: canvas.height };
   }
 
-  setTimeout(function startCinematic() {
+  requestAnimationFrame(function() { requestAnimationFrame(function startCinematic() {
     const { W, H } = sizeCanvas();
     const ctx      = canvas.getContext('2d');
     const TOTAL    = 50;
@@ -237,7 +238,7 @@ function restartGame() { GS.clear(); window.location.href = 'index.html'; }
       rafId = requestAnimationFrame(frame);
     }
     rafId = requestAnimationFrame(frame);
-  }, 120);
+  }); }); // double rAF — layout complete
 })();
 
 /* ════════════════════════════════════════
