@@ -15,11 +15,8 @@
   <!-- SCREEN 1: LANDING -->
   <div id="screen-landing" class="screen active">
     <div class="particle-bg" id="particles"></div>
-    <div style="padding:16px 20px;display:flex;justify-content:center;position:relative;z-index:2;flex-shrink:0;">
-      <a href="https://iombio.com" target="_blank" class="header-logo">
-        <img src="https://iombio.com/wp-content/uploads/2025/11/IOM_BLACK.png" alt="iom Bioworks" style="height:28px;width:auto;" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-        <span class="logo-fallback" style="display:none;">iom Bioworks</span>
-      </a>
+    <div style="padding:20px;display:flex;justify-content:center;position:relative;z-index:2;flex-shrink:0;">
+      <div class="logo-text">iom Bioworks</div>
     </div>
     <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 28px 40px;text-align:center;position:relative;z-index:2;">
       <div style="font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--pink);margin-bottom:12px;">A Day in Your Gut</div>
@@ -76,38 +73,28 @@
     </div>
   </div>
 
-  <div id="footer-landing"></div>
 </div>
 
 <script src="js/state.js"></script>
 <script src="js/constants.js"></script>
-<script src="js/components.js"></script>
 <script>
   GS.clear();
 
-  /* Render shared components */
-  const hP = document.getElementById('header-personalise');
-  if (hP) hP.outerHTML = renderHeader({ showBack:true, backHref:'#', backLabel:'Back' });
-  const hG = document.getElementById('header-goal');
-  if (hG) hG.outerHTML = renderHeader({ pill:'Gut Goal', showMute:true });
-  const fL = document.getElementById('footer-landing');
-  if (fL) fL.outerHTML = renderFooter();
-  document.getElementById('back-to-landing').onclick = () => goTo('landing');
-  document.getElementById('back-to-personalise').onclick = () => goTo('personalise');
-
-  /* Read URL parameters on game start and save to state */
-  (function readUrlParams() {
-    const params = new URLSearchParams(window.location.search);
-    const wa  = params.get('wa')  || '';
-    const utm = params.get('utm_source') || 'direct';
-    if (wa || utm !== 'direct') {
-      GS.save({ whatsapp_number: wa, channel: utm });
-    }
+  /* Read URL params */
+  (function() {
+    const p = new URLSearchParams(window.location.search);
+    const wa = p.get('wa') || '';
+    const utm = p.get('utm_source') || 'direct';
+    if (wa || utm !== 'direct') GS.save({ whatsapp_number: wa, channel: utm });
   })();
 
   function goTo(id) {
     document.querySelectorAll('.screen').forEach(s => {
-      if (s.classList.contains('active')) { s.classList.remove('active'); s.classList.add('exit'); setTimeout(() => s.classList.remove('exit'), 400); }
+      if (s.classList.contains('active')) {
+        s.classList.remove('active');
+        s.classList.add('exit');
+        setTimeout(() => s.classList.remove('exit'), 400);
+      }
     });
     setTimeout(() => document.getElementById('screen-' + id).classList.add('active'), 60);
   }
@@ -117,9 +104,18 @@
   document.getElementById('back-to-personalise').addEventListener('click', () => goTo('personalise'));
 
   let avatar = null;
-  document.getElementById('av-male').addEventListener('click', () => { avatar = 'male'; document.getElementById('av-male').classList.add('selected'); document.getElementById('av-female').classList.remove('selected'); check(); });
-  document.getElementById('av-female').addEventListener('click', () => { avatar = 'female'; document.getElementById('av-female').classList.add('selected'); document.getElementById('av-male').classList.remove('selected'); check(); });
-
+  document.getElementById('av-male').addEventListener('click', () => {
+    avatar = 'male';
+    document.getElementById('av-male').classList.add('selected');
+    document.getElementById('av-female').classList.remove('selected');
+    check();
+  });
+  document.getElementById('av-female').addEventListener('click', () => {
+    avatar = 'female';
+    document.getElementById('av-female').classList.add('selected');
+    document.getElementById('av-male').classList.remove('selected');
+    check();
+  });
   document.getElementById('name-input').addEventListener('input', check);
 
   function check() {
@@ -150,12 +146,16 @@
   });
 
   let muted = false;
-  document.getElementById('mute-btn').addEventListener('click', () => { muted = !muted; document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊'; });
+  document.getElementById('mute-btn').addEventListener('click', () => {
+    muted = !muted;
+    document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
+  });
 
   const pBg = document.getElementById('particles');
   const pColors = ['#E91E8C','#4CAF50','#1B2B4B'];
   for (let i = 0; i < 22; i++) {
-    const d = document.createElement('div'); d.className = 'particle';
+    const d = document.createElement('div');
+    d.className = 'particle';
     const size = 6 + Math.random() * 32;
     d.style.cssText = `width:${size}px;height:${size}px;background:${pColors[Math.floor(Math.random()*3)]};left:${Math.random()*100}%;top:${Math.random()*100}%;animation-duration:${8+Math.random()*12}s;animation-delay:${-Math.random()*12}s;`;
     pBg.appendChild(d);
