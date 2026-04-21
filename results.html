@@ -82,7 +82,7 @@ function showToast(msg, dur) {
   setTimeout(() => t.classList.remove('visible'), dur || 3200);
 }
 
-function restartGame() { GS.clear(); window.location.href = 'index.html'; }
+function restartGame() { window.location.href = 'index.html?restart=1'; }
 
 function buildCardUrl() {
   return window.location.origin + '/card.html?' + new URLSearchParams({
@@ -347,7 +347,7 @@ function fireWebhook() {
     levels_reached: s.levels_reached||4, game_completed: true,
     card_url: buildCardUrl()
   };
-  fetch('https://hook.eu1.make.com/PLACEHOLDER_REPLACE_WITH_REAL_URL', {
+  fetch('https://hook.eu1.make.com/xua3jfbh3ysmhobdhs7t5lxfqk5fzhck', {
     method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)
   }).catch(()=>{});
 }
