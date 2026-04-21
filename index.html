@@ -78,7 +78,9 @@
 <script src="js/state.js"></script>
 <script src="js/constants.js"></script>
 <script>
-  GS.clear();
+  /* Only clear state on explicit restart, not on every landing page load */
+  const _params = new URLSearchParams(window.location.search);
+  if (_params.get('restart') === '1') GS.clear();
 
   /* Read URL params */
   (function() {
