@@ -12,8 +12,7 @@
 <div id="gut-app">
   <div id="screen-recommend" class="screen active">
 
-    <div id="hdr-recommend"></div>
-    <div id="hero-section" style="padding:20px 24px 20px;flex-shrink:0;">
+    <div id="hero-section" style="padding:28px 24px 20px;flex-shrink:0;">
       <div style="font-size:11px;font-weight:500;color:var(--pink);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;">Your Gut Prescription</div>
       <h2 class="serif" style="font-size:28px;color:var(--navy);line-height:1.25;margin-bottom:6px;font-weight:600;">Here's what <span id="rec-name">your</span> gut<br>actually <em style="color:var(--pink);">needs</em></h2>
       <div id="persona-pill" style="display:inline-flex;align-items:center;gap:6px;background:#F0EBE3;padding:5px 12px;border-radius:20px;font-size:12px;color:var(--navy);font-weight:500;margin-top:6px;"></div>
@@ -42,12 +41,11 @@
 <script src="js/state.js"></script>
 <script src="js/constants.js"></script>
 <script src="js/scoring.js"></script>
-<script src="js/components.js"></script>
 <script>
 const s = GS.get();
 if (!s.name || !s.personaKey) window.location.href = 'index.html';
 
-function restartGame() { GS.clear(); window.location.href = 'index.html'; }
+function restartGame() { window.location.href = 'index.html?restart=1'; }
 
 function buildProductCard(container, product, why, labelText, labelClass, statText) {
   const p = PRODUCTS[product];
@@ -55,7 +53,7 @@ function buildProductCard(container, product, why, labelText, labelClass, statTe
   const utmUrl = p.url + '?utm_source=gutjourney&utm_medium=' + (new URLSearchParams(window.location.search).get('utm_source')||'direct') + '&utm_campaign=gut_persona_game';
   container.innerHTML = `
     <div class="product-card-img">
-      <img src="${p.img}" alt="${p.name}" onerror="this.parentElement.innerHTML='<div class=\\'img-placeholder\\'>📦 ${p.name}<br><span style=\\'font-size:11px;\\'>Image coming soon</span></div>'">
+      <img src="${p.img}" alt="${p.name}" onerror="this.parentElement.innerHTML='<div class=\"img-placeholder\">📦 ${p.name}<br><span style=\"font-size:11px;\">Image coming soon</span></div>'">
     </div>
     <div class="product-card-body">
       <span class="product-label ${labelClass}">${labelText}</span>
@@ -66,7 +64,7 @@ function buildProductCard(container, product, why, labelText, labelClass, statTe
     </div>`;
 }
 
-const persona = PERSONAS[s.personaKey];
+const persona    = PERSONAS[s.personaKey];
 const primaryKey = persona.primary;
 const secondaryKey = getSecondaryProduct(s.personaKey, s.goal);
 
@@ -78,8 +76,7 @@ buildProductCard(
   document.getElementById('primary-card'),
   primaryKey,
   PRODUCT_WHY[primaryKey] || '',
-  'START HERE',
-  'primary',
+  'START HERE', 'primary',
   primaryKey === 'stresswise' ? `Based on your Stress Index score of ${s.stressIndex}` :
   primaryKey === 'dualsoothe' ? `Based on your Gut Diversity score of ${s.gutDiversity}` :
   `Based on your Gut Score of ${s.finalScore}/100`
@@ -89,19 +86,11 @@ buildProductCard(
   document.getElementById('secondary-card'),
   secondaryKey,
   SECONDARY_WHY[secondaryKey] || PRODUCT_WHY[secondaryKey] || '',
-  'UPGRADE PATH',
-  'secondary',
-  null
+  'UPGRADE PATH', 'secondary', null
 );
 
-const primaryProduct = PRODUCTS[primaryKey];
+const primaryProduct   = PRODUCTS[primaryKey];
 const secondaryProduct = PRODUCTS[secondaryKey];
-/* Render header + footer */
-const hr = document.getElementById('hdr-recommend');
-if (hr) hr.outerHTML = renderHeader({ showBack:true, backHref:'results.html', backLabel:'Back to card' });
-const fr = document.getElementById('footer-recommend');
-if (fr) fr.outerHTML = renderFooter();
-
 if (primaryProduct && primaryProduct.type === 'prebiotic' && secondaryProduct && secondaryProduct.type === 'test') {
   document.getElementById('edu-strip').style.display = 'block';
 }
