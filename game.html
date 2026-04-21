@@ -3,627 +3,354 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>A Day in Your Gut — iom Bioworks</title>
+<title>Your Gut Persona — iom Bioworks</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  .l4-text{font-family:'Cormorant Garamond',serif;color:white;text-align:center;font-style:italic;}
+  @keyframes cardReveal{0%{transform:scale(0.4) translateY(40px);opacity:0;}100%{transform:scale(1) translateY(0);opacity:1;}}
+  .card-reveal{animation:cardReveal 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards;}
+  .share-loading{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.4);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+</style>
 </head>
 <body>
 <div id="gut-app">
 
-  <!-- MORNING CHOICE -->
-  <div id="screen-morning" class="screen active">
-    <div class="header">
-      <a href="index.html" class="back-btn">← Back</a>
-      <div class="pill">Morning · 1 of 4</div>
-      <button class="mute-btn">🔊</button>
+  <!-- LEVEL 4 CINEMATIC -->
+  <div id="screen-level4" class="screen active">
+    <div class="runner-header" style="background:#0d1f3c;">
+      <div class="runner-label">Your gut — fully unlocked 🌿</div>
+      <div class="orb-count" id="l4-orb-count">⚡ 0 / 50</div>
     </div>
-    <div style="padding:22px 22px 36px;flex:1;">
-      <div class="time-stamp">🌅 6:00 AM</div>
-      <h2 class="serif" style="font-size:30px;color:var(--navy);line-height:1.2;margin-bottom:8px;font-weight:600;"><span id="morning-name">Your</span> gut bacteria<br>just woke up.</h2>
-      <p style="font-size:13px;color:#888;line-height:1.65;margin-bottom:22px;">What's the first thing you give them?</p>
-      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;" id="morning-options"></div>
-      <button class="btn-primary" id="btn-morning-next" disabled>See Your Gut React →</button>
-    </div>
-  </div>
-
-  <!-- RUNNER 1 -->
-  <div id="screen-runner1" class="screen" style="background:var(--runner-bg);flex-direction:column;height:100%;">
-    <div class="runner-header">
-      <div class="runner-label">Your gut at 6am</div>
-      <div class="orb-count" id="orb-count-display">⚡ 0 / 20</div>
-    </div>
-    <div style="background:var(--runner-bg);padding:0 18px 10px;flex-shrink:0;">
-      <div class="timer-bar-wrap"><div class="timer-bar-fill" id="timer-bar" style="width:100%;"></div></div>
-    </div>
-    <div style="position:relative;flex:1;overflow:hidden;min-height:280px;">
-      <canvas id="runner-canvas"></canvas>
-      <div class="prerunner-overlay visible" id="prerunner-overlay">
-        <div class="prerunner-icon">🏃</div>
-        <div class="prerunner-title">Your gut right now</div>
-        <div class="prerunner-body">Watch how many prebiotic particles your gut can capture on your current diet.</div>
-        <div class="tap-hint">
-          <div class="tap-hint-item"><div class="tap-hint-arrow">👆</div><div class="tap-hint-label">Tap upper half<br>to move up</div></div>
-          <div class="tap-hint-item"><div class="tap-hint-arrow">👇</div><div class="tap-hint-label">Tap lower half<br>to move down</div></div>
-        </div>
-        <div class="prerunner-countdown" id="prerunner-count">Starting in 3...</div>
+    <div style="background:#0d1f3c;padding:0 18px 10px;flex-shrink:0;">
+      <div class="timer-bar-wrap" style="background:#0d1f3c;">
+        <div class="timer-bar-fill" id="l4-timer" style="width:100%;"></div>
       </div>
-      <div class="flash-overlay" id="flash-overlay">
-        <div class="flash-tag">🔬 Gut Test Power-Up</div>
-        <div class="flash-main">This is your gut —<br>fully optimised</div>
-        <div class="flash-sub">A A Gut Test reveals hidden prebiotic pathways your gut can't find alone.</div>
-      </div>
-      <div class="summary-overlay" id="summary-overlay">
-        <div class="summary-label-top">Level 1 Complete — 6am Gut</div>
-        <div class="summary-score" id="summary-score">0</div>
-        <div class="summary-of">prebiotic particles captured out of 20</div>
-        <div class="summary-bar-wrap"><div class="summary-bar-fill" id="summary-bar"></div></div>
-        <div class="summary-msg" id="summary-msg"></div>
-        <div class="summary-hint">💡 Diet changes can double this. A Gut Test can unlock even more hidden pathways.</div>
-        <button class="btn-primary" id="summary-next-btn" style="max-width:280px;">Continue →</button>
+    </div>
+    <div id="l4-canvas-wrap" class="canvas-wrap">
+      <canvas id="l4-canvas" style="display:block;width:100%;height:100%;"></canvas>
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:32px 24px;pointer-events:none;z-index:3;text-align:center;">
+        <div id="l4-msg" class="l4-text" style="font-size:22px;opacity:0;transition:opacity 0.8s;max-width:280px;line-height:1.4;"></div>
       </div>
     </div>
   </div>
 
-  <!-- LUNCH CHOICE -->
-  <div id="screen-lunch" class="screen">
-    <div class="header">
-      <button class="back-btn" id="back-to-morning">← Back</button>
-      <div class="pill">Lunch · 2 of 4</div>
-      <button class="mute-btn">🔊</button>
+  <!-- PERSONA CARD -->
+  <div id="screen-card" class="screen" style="background:var(--navy);overflow-y:auto;">
+    <div style="padding:16px 20px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
+      <div class="logo-text" style="color:rgba(255,255,255,0.5);">iom Bioworks</div>
+      <button class="mute-btn" style="color:white;opacity:0.5;">🔊</button>
     </div>
-    <div style="padding:22px 22px 36px;flex:1;">
-      <div class="time-stamp">☀️ 1:00 PM</div>
-      <h2 class="serif" style="font-size:30px;color:var(--navy);line-height:1.2;margin-bottom:8px;font-weight:600;">Lunch break.<br>Your gut's <em style="color:var(--pink);">busiest moment.</em></h2>
-      <p style="font-size:13px;color:#888;line-height:1.65;margin-bottom:20px;">Build your actual plate — not your ideal one.</p>
-      <div id="lunch-sections"></div>
-      <button class="btn-primary" id="btn-lunch-next" disabled style="margin-top:8px;">See Your Gut Process It →</button>
-    </div>
-  </div>
-
-  <!-- RUNNER 2 -->
-  <div id="screen-runner2" class="screen" style="background:#1a1a0d;flex-direction:column;height:100%;">
-    <div class="runner-header" style="background:#1a1a0d;">
-      <div class="runner-label">Your gut at 1pm</div>
-      <div class="orb-count" id="orb-count-display-2">⚡ 0 / 30</div>
-    </div>
-    <div style="background:#1a1a0d;padding:0 18px 10px;flex-shrink:0;">
-      <div class="timer-bar-wrap" style="background:#1a1a0d;"><div class="timer-bar-fill" id="timer-bar-2" style="width:100%;"></div></div>
-    </div>
-    <div style="position:relative;flex:1;overflow:hidden;min-height:280px;">
-      <canvas id="runner-canvas-2"></canvas>
-      <div class="prerunner-overlay visible" id="prerunner-overlay-2">
-        <div class="prerunner-icon">☀️</div>
-        <div class="prerunner-title">1pm. Lunch is done.</div>
-        <div class="prerunner-body">Watch what your gut does with what you gave it. Tap to navigate — collect as many prebiotics as you can.</div>
-        <div class="tap-hint">
-          <div class="tap-hint-item"><div class="tap-hint-arrow">👆</div><div class="tap-hint-label">Tap upper half<br>to move up</div></div>
-          <div class="tap-hint-item"><div class="tap-hint-arrow">👇</div><div class="tap-hint-label">Tap lower half<br>to move down</div></div>
-        </div>
-        <div class="prerunner-countdown" id="prerunner-count-2">Starting in 3...</div>
-      </div>
-      <div class="flash-overlay" id="flash-overlay-2">
-        <div class="flash-tag">🔬 Gut Test Power-Up</div>
-        <div class="flash-main">Imagine what the right<br>fuel could do 🌿</div>
-        <div class="flash-sub">Better data = better absorption. A Gut Test shows you exactly where your gut is leaving nutrients uncaptured.</div>
-      </div>
-      <div class="summary-overlay" id="summary-overlay-2">
-        <div class="summary-label-top">Level 2 Complete — 1pm Gut</div>
-        <div class="summary-score" id="summary-score-2">0</div>
-        <div class="summary-of">prebiotic particles captured out of 30</div>
-        <div class="summary-bar-wrap"><div class="summary-bar-fill" id="summary-bar-2"></div></div>
-        <div class="summary-msg" id="summary-msg-2"></div>
-        <div class="summary-hint">💡 This is where a Gut Test changes everything — it reveals the hidden pathways →</div>
-        <button class="btn-primary" id="summary-next-btn-2" style="max-width:280px;">Continue →</button>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:0 20px 36px;">
+      <div id="persona-card-wrap" style="opacity:0;width:100%;max-width:320px;margin-bottom:24px;"></div>
+      <div style="width:100%;max-width:320px;display:flex;flex-direction:column;gap:10px;">
+        <button class="btn-wa" id="btn-wa">💬 Share on WhatsApp</button>
+        <button class="btn-ig" id="btn-ig">📸 Share on Instagram</button>
+        <button class="btn-primary" onclick="window.location.href='recommend.html'" style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);">What does my gut actually need? →</button>
+        <button class="btn-secondary" onclick="restartGame()" style="background:transparent;color:rgba(255,255,255,0.4);border-color:rgba(255,255,255,0.15);font-size:13px;padding:12px;">Retake the Journey 🔄</button>
       </div>
     </div>
   </div>
 
-  <!-- AFTERNOON CHOICE -->
-  <div id="screen-afternoon" class="screen">
-    <div class="header">
-      <button class="back-btn" id="back-to-lunch">← Back</button>
-      <div class="pill">Afternoon · 3 of 4</div>
-      <button class="mute-btn">🔊</button>
-    </div>
-    <div style="padding:22px 22px 36px;flex:1;">
-      <div class="time-stamp">🌤️ 3:47 PM</div>
-      <h2 class="serif" style="font-size:30px;color:var(--navy);line-height:1.2;margin-bottom:8px;font-weight:600;">Energy dip.<br>The gut tunnel <em style="color:var(--pink);">splits.</em></h2>
-      <p style="font-size:13px;color:#888;line-height:1.65;margin-bottom:22px;">Which path do you actually take?</p>
-      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;" id="afternoon-options"></div>
-      <button class="btn-primary" id="btn-afternoon-next" disabled>See The Afternoon Gut →</button>
-    </div>
-  </div>
-
-  <!-- RUNNER 3 -->
-  <div id="screen-runner3" class="screen" style="background:#0d2010;flex-direction:column;height:100%;">
-    <div class="runner-header" style="background:#0d2010;">
-      <div class="runner-label">Your gut at 4pm</div>
-      <div class="orb-count" id="orb-count-display-3">⚡ 0 / 40</div>
-    </div>
-    <div style="background:#0d2010;padding:0 18px 10px;flex-shrink:0;">
-      <div class="timer-bar-wrap" style="background:#0d2010;"><div class="timer-bar-fill" id="timer-bar-3" style="width:100%;"></div></div>
-    </div>
-    <div style="position:relative;flex:1;overflow:hidden;min-height:280px;">
-      <canvas id="runner-canvas-3"></canvas>
-      <div class="prerunner-overlay visible" id="prerunner-overlay-3">
-        <div class="prerunner-icon">🔬</div>
-        <div class="prerunner-title">What a Gut Test unlocks</div>
-        <div class="prerunner-body">A Gut Test reveals hidden prebiotic pathways your gut can't find alone. Watch what happens when the map is complete.</div>
-        <div class="tap-hint">
-          <div class="tap-hint-item"><div class="tap-hint-arrow">👆</div><div class="tap-hint-label">Tap upper half<br>to move up</div></div>
-          <div class="tap-hint-item"><div class="tap-hint-arrow">👇</div><div class="tap-hint-label">Tap lower half<br>to move down</div></div>
-        </div>
-        <div class="prerunner-countdown" id="prerunner-count-3">Starting in 3...</div>
-      </div>
-      <div class="flash-overlay" id="flash-overlay-3">
-        <div class="flash-tag">🔬 Gut Test Power-Up</div>
-        <div class="flash-main">Your gut — at full<br>capacity 🌿</div>
-        <div class="flash-sub">This is what knowing your microbiome feels like. Every hidden pathway — visible. Every prebiotic — captured.</div>
-      </div>
-      <div class="summary-overlay" id="summary-overlay-3">
-        <div class="summary-label-top">Level 3 Complete — 4pm Gut</div>
-        <div class="summary-score" id="summary-score-3">0</div>
-        <div class="summary-of">prebiotic particles captured out of 40</div>
-        <div class="summary-bar-wrap"><div class="summary-bar-fill" id="summary-bar-3"></div></div>
-        <div class="summary-msg" id="summary-msg-3"></div>
-        <div class="summary-hint">💡 Your gut at full capacity — this is what knowing your microbiome feels like.</div>
-        <button class="btn-primary" id="summary-next-btn-3" style="max-width:280px;">Final Choice →</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- DINNER CHOICE -->
-  <div id="screen-dinner" class="screen">
-    <div class="header">
-      <button class="back-btn" id="back-to-afternoon">← Back</button>
-      <div class="pill">Evening · 4 of 4</div>
-      <button class="mute-btn">🔊</button>
-    </div>
-    <div style="padding:22px 22px 36px;flex:1;">
-      <div class="time-stamp" style="color:var(--pink);">🌙 8:00 PM</div>
-      <h2 class="serif" style="font-size:30px;color:var(--navy);line-height:1.2;margin-bottom:8px;font-weight:600;">Day's done.<br>Last fuel for your gut <em style="color:var(--pink);">until tomorrow.</em></h2>
-      <p style="font-size:13px;color:#888;line-height:1.65;margin-bottom:22px;">What does your gut actually get for dinner?</p>
-      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;" id="dinner-options"></div>
-      <button class="btn-primary" id="btn-dinner-next" disabled>See My Gut Persona 🎴</button>
-    </div>
-  </div>
-
-  <div id="footer-game"></div>
 </div>
+<div id="toast" class="toast"></div>
 
 <script src="js/state.js"></script>
 <script src="js/constants.js"></script>
 <script src="js/scoring.js"></script>
-<script src="js/components.js"></script>
-
 <script>
+const s = GS.get();
+if (!s.name || !s.personaKey) window.location.href = 'index.html';
+GS.save({ levels_reached: 4 });
 
-/* ─── HELPER: screen transitions ─── */
 function goTo(id) {
-  document.querySelectorAll('.screen').forEach(s => {
-    if (s.classList.contains('active')) {
-      s.classList.remove('active');
-      s.classList.add('exit');
-      setTimeout(() => s.classList.remove('exit'), 400);
+  document.querySelectorAll('.screen').forEach(sc => {
+    if (sc.classList.contains('active')) {
+      sc.classList.remove('active'); sc.classList.add('exit');
+      setTimeout(() => sc.classList.remove('exit'), 400);
     }
   });
-  setTimeout(() => {
-    const el = document.getElementById('screen-' + id);
-    if (el) el.classList.add('active');
-  }, 60);
+  setTimeout(() => { const el = document.getElementById('screen-' + id); if (el) el.classList.add('active'); }, 60);
 }
 
-/* ─── HELPER: build simple choice screens ─── */
-function buildChoiceOptions(containerId, choiceKey, btnId, saveKey, scoreKey, nextFn) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-  const choices = CHOICES[choiceKey];
-  Object.entries(choices).forEach(([key, val]) => {
-    const div = document.createElement('div');
-    div.className = 'option-card';
-    div.innerHTML = `<span class="option-emoji">${val.emoji}</span><div style="flex:1;padding-right:28px;"><div class="option-title">${val.label}</div><div class="option-sub">${val.sub}</div></div><div class="option-check">✓</div>`;
-    div.addEventListener('click', () => {
-      container.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
-      div.classList.add('selected');
-      GS.save({ [saveKey]: key, [scoreKey]: val.score });
-      document.getElementById(btnId).disabled = false;
-    });
-    container.appendChild(div);
-  });
-  document.getElementById(btnId).addEventListener('click', nextFn);
+function showToast(msg, dur) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('visible');
+  setTimeout(() => t.classList.remove('visible'), dur || 3200);
 }
 
-/* ─── HELPER: build lunch plate sections with visual plate ─── */
-function buildLunchSections() {
-  const container = document.getElementById('lunch-sections');
-  if (!container) return;
+function restartGame() { GS.clear(); window.location.href = 'index.html'; }
 
-  /* Emoji that appears on the plate per zone */
-  const plateEmojis = {
-    base:    { A:'🍚', B:'🫓', C:'🌾', D:'' },
-    protein: { A:'🫕', B:'🫘', C:'🧀', D:'🥚', E:'' },
-    veg:     { A:'🥬', B:'🥦', C:'🥗', D:'' },
-    side:    { A:'🥛', B:'🌶️', C:'🥤', D:'' }
-  };
+function buildCardUrl() {
+  return window.location.origin + '/card.html?' + new URLSearchParams({
+    p: s.personaKey||'', s: s.finalScore||0,
+    n: encodeURIComponent(s.name||''),
+    f: s.fiberLevel||0, st: s.stressIndex||0, d: s.gutDiversity||0
+  }).toString();
+}
 
-  /* Plate visual */
-  const plateWrap = document.createElement('div');
-  plateWrap.style.cssText = 'display:flex;justify-content:center;margin-bottom:16px;';
-  plateWrap.innerHTML = `
-    <div id="plate-visual" style="
-      width:160px;height:160px;border-radius:50%;
-      background:white;border:3px solid #EDE9E3;
-      position:relative;display:flex;align-items:center;
-      justify-content:center;flex-shrink:0;
-      box-shadow:0 4px 20px rgba(27,43,75,0.1);
-      transition:all 0.3s ease;">
-      <div id="plate-items" style="
-        width:120px;height:120px;border-radius:50%;
-        background:#FAF8F5;border:2px dashed #EDE9E3;
-        display:grid;grid-template-columns:1fr 1fr;
-        grid-template-rows:1fr 1fr;
-        place-items:center;font-size:28px;
-        transition:all 0.3s ease;">
-        <span id="p-base"    style="opacity:0.2;font-size:20px;">🍽️</span>
-        <span id="p-protein" style="opacity:0.2;font-size:20px;">🍽️</span>
-        <span id="p-veg"     style="opacity:0.2;font-size:20px;">🍽️</span>
-        <span id="p-side"    style="opacity:0.2;font-size:20px;">🍽️</span>
-      </div>
-      <div id="plate-ring" style="
-        position:absolute;inset:-3px;border-radius:50%;
-        border:3px solid var(--border);
-        pointer-events:none;transition:border-color 0.4s;">
-      </div>
-    </div>`;
-  container.appendChild(plateWrap);
+/* ── Level 4 Cinematic — auto-collect runner ── */
+(function runL4() {
+  const canvas = document.getElementById('l4-canvas');
+  const wrap   = document.getElementById('l4-canvas-wrap');
 
-  function updatePlate(zone, emoji) {
-    const el = document.getElementById('p-' + zone);
-    if (!el) return;
-    if (emoji) {
-      el.textContent = emoji;
-      el.style.opacity = '1';
-      el.style.transform = 'scale(1.2)';
-      setTimeout(() => { el.style.transform = 'scale(1)'; }, 200);
-    } else {
-      el.textContent = '🍽️';
-      el.style.opacity = '0.2';
-    }
-    /* Check if plate is full — glow the ring */
-    const allFilled = ['base','protein','veg','side'].every(z => {
-      const sp = document.getElementById('p-' + z);
-      return sp && sp.style.opacity === '1';
-    });
-    const ring = document.getElementById('plate-ring');
-    if (ring) ring.style.borderColor = allFilled ? 'var(--pink)' : 'var(--border)';
+  function sizeCanvas() {
+    const r = wrap.getBoundingClientRect();
+    const W = Math.round(r.width)  || window.innerWidth  || 375;
+    const H = Math.round(r.height) || (window.innerHeight - 65) || 480;
+    canvas.width  = W;
+    canvas.height = Math.max(H, 280);
+    return { W: canvas.width, H: canvas.height };
   }
 
-  const sections = [
-    { key: 'base',    label: 'Base 🍚',      saveKey: 'lunch_base'    },
-    { key: 'protein', label: 'Protein 💪',    saveKey: 'lunch_protein' },
-    { key: 'veg',     label: 'Vegetables 🥗', saveKey: 'lunch_veg'     },
-    { key: 'side',    label: 'Side 🥛',       saveKey: 'lunch_side'    }
-  ];
-  const lunchState = { base: null, protein: null, veg: null, side: null };
+  /* Double rAF so layout is fully settled before we measure */
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    const { W, H } = sizeCanvas();
+    const ctx = canvas.getContext('2d');
 
-  sections.forEach(sec => {
-    const wrap  = document.createElement('div'); wrap.className = 'plate-section';
-    const label = document.createElement('div'); label.className = 'plate-section-label'; label.textContent = sec.label;
-    const opts  = document.createElement('div'); opts.className = 'plate-options';
-    Object.entries(CHOICES.lunch[sec.key]).forEach(([key, val]) => {
-      const chip = document.createElement('div'); chip.className = 'plate-chip';
-      chip.textContent = val.emoji + ' ' + val.label;
-      chip.addEventListener('click', () => {
-        opts.querySelectorAll('.plate-chip').forEach(c => c.classList.remove('selected'));
-        chip.classList.add('selected');
-        lunchState[sec.key] = key;
-        GS.save({ [sec.saveKey]: key });
-        /* Update plate visual */
-        const emoji = plateEmojis[sec.key][key] || '';
-        updatePlate(sec.key, emoji);
-        document.getElementById('btn-lunch-next').disabled =
-          !Object.values(lunchState).every(v => v !== null);
+    const TOTAL    = 50;
+    const DURATION = 11000;
+    /* Three lanes the runner oscillates through */
+    const ZONES    = [H * 0.22, H * 0.50, H * 0.78];
+
+    let collected = 0, orbs = [], popups = [];
+    let orbsSpawned = 0, lastSpawn = null, startTime = null, rafId = null;
+
+    const RUNNER_X     = W * 0.13;
+    const RUNNER_EMOJI = GS.val('avatar','male') === 'female' ? '🚶‍♀️' : '🚶';
+    /* Runner sweeps all 3 lanes — period ~3.3s so it visits every zone */
+    const RUNNER_SWING = H * 0.30;
+
+    const msgs = [
+      { time: 2200, text: 'This is your gut — fully optimised' },
+      { time: 5500, text: 'Gut Test + Prebiotics.\nNothing left uncaptured.' },
+      { time: 8500, text: (s.name || 'You') + ', meet your\nGut Persona 🎴' }
+    ];
+    const msgShown = [];
+
+    function frame(now) {
+      if (!startTime) { startTime = now; lastSpawn = now; }
+      const elapsed  = now - startTime;
+      const progress = Math.min(elapsed / DURATION, 1);
+
+      /* Background */
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = '#0a1528';
+      ctx.fillRect(0, 0, W, H);
+      for (let i = 0; i < W; i += 4) {
+        const a = 0.04 + 0.03 * Math.sin(i * 0.05 + elapsed * 0.002);
+        ctx.fillStyle = `rgba(76,175,80,${a})`; ctx.fillRect(i, 0, 2, H);
+      }
+
+      /* Spawn orbs — one per lane in rotation so all lanes are covered */
+      if (now - lastSpawn > 220 && orbsSpawned < TOTAL) {
+        const zone = orbsSpawned % 3;          /* cycle lanes evenly */
+        orbs.push({ x: W + 10, y: ZONES[zone], id: orbsSpawned });
+        orbsSpawned++; lastSpawn = now;
+      }
+
+      /* Runner Y — full sweep across all 3 lanes */
+      const runnerY = H * 0.50 + RUNNER_SWING * Math.sin(elapsed * 0.0019);
+
+      /* Process orbs */
+      orbs = orbs.filter(orb => {
+        orb.x -= 220 / 60;
+
+        const dx = (RUNNER_X + 14) - orb.x;
+        const dy = runnerY - orb.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        /* Collect radius: 60px — generous so cinematic auto-collects ~90% */
+        if (dist < 60) {
+          collected++;
+          document.getElementById('l4-orb-count').textContent = '⚡ ' + collected + ' / 50';
+          popups.push({ x: orb.x, y: orb.y - 16, text: '✨', age: 0, life: 30 });
+          return false;
+        }
+        if (orb.x < -20) return false;
+
+        /* Draw orb */
+        ctx.fillStyle = '#FFD700'; ctx.globalAlpha = 0.92;
+        ctx.beginPath(); ctx.arc(orb.x, orb.y, 12, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = 'rgba(255,215,0,0.3)'; ctx.lineWidth = 6;
+        ctx.beginPath(); ctx.arc(orb.x, orb.y, 18, 0, Math.PI * 2); ctx.stroke();
+        ctx.globalAlpha = 1;
+        return true;
       });
-      opts.appendChild(chip);
-    });
-    wrap.appendChild(label); wrap.appendChild(opts); container.appendChild(wrap);
-  });
 
-  document.getElementById('btn-lunch-next').addEventListener('click', () => {
-    const s = GS.get();
-    GS.save({ lunch_score: calcLunchScore(s) });
-    goTo('runner2');
-    setTimeout(() => beginCountdown('prerunner-overlay-2', 'prerunner-count-2', () => {
-      runLevel('runner-canvas-2', 'timer-bar-2', 'orb-count-display-2',
-               'flash-overlay-2', 'summary-overlay-2', 'summary-score-2',
-               'summary-bar-2', 'summary-msg-2', 'summary-next-btn-2',
-               RUNNER_CONFIG.level2, 2, 30, () => goTo('afternoon'));
-    }), 100);
-  });
-}
-
-/* ─── RUNNER: countdown before level starts ─── */
-function beginCountdown(overlayId, countId, runFn) {
-  let count = 3;
-  const overlay  = document.getElementById(overlayId);
-  const countEl  = document.getElementById(countId);
-  if (overlay) overlay.classList.add('visible');
-  const iv = setInterval(() => {
-    count--;
-    if (count > 0) {
-      if (countEl) countEl.textContent = 'Starting in ' + count + '...';
-    } else {
-      clearInterval(iv);
-      if (overlay) overlay.classList.remove('visible');
-      setTimeout(runFn, 350);
-    }
-  }, 1000);
-}
-
-/* ─── RUNNER: core game loop ─── */
-function runLevel(canvasId, timerId, countId, flashId, summaryId,
-                  scoreElId, barElId, msgElId, nextBtnId,
-                  config, levelNum, total, nextFn) {
-
-  const canvas    = document.getElementById(canvasId);
-  const container = canvas.parentElement;
-  const appEl     = document.getElementById("gut-app");
-  const headerH   = 65;
-  const W = container.offsetWidth  || appEl.offsetWidth  || 375;
-  const H = Math.max((appEl.offsetHeight || window.innerHeight) - headerH, 260);
-  canvas.width  = W;
-  canvas.height = H;
-  const ctx = canvas.getContext('2d');
-
-  const { speed, totalOrbs, spawnInterval, duration, bgColor, flashTime } = config;
-  const ZONES = [H * 0.22, H * 0.5, H * 0.78];
-
-  let runnerZone = 1, runnerY = ZONES[1], targetY = ZONES[1], autoReturnTimer = null;
-  let collected = 0, collectedIds = new Set(), orbsSpawned = 0, orbs = [], popups = [];
-  let lastSpawn = null, flashShown = false, flashDone = false, gameEnded = false;
-  let startTime = null, rafId = null;
-
-  const RUNNER_EMOJI = GS.val('avatar', 'male') === 'female' ? '🚶‍♀️' : '🚶';
-  const RUNNER_X     = W * 0.13;
-
-  function tap(clientY) {
-    if (gameEnded) return;
-    const rect = canvas.getBoundingClientRect();
-    const y = clientY - rect.top;
-    if (y < H / 2) runnerZone = Math.max(0, runnerZone - 1);
-    else            runnerZone = Math.min(2, runnerZone + 1);
-    targetY = ZONES[runnerZone];
-    if (autoReturnTimer) clearTimeout(autoReturnTimer);
-    autoReturnTimer = setTimeout(() => { runnerZone = 1; targetY = ZONES[1]; }, 1100);
-  }
-
-  canvas.addEventListener('click',      e => tap(e.clientY));
-  canvas.addEventListener('touchstart', e => { e.preventDefault(); tap(e.touches[0].clientY); }, { passive: false });
-
-  function frame(now) {
-    if (!startTime) { startTime = now; lastSpawn = now; }
-    if (gameEnded) return;
-
-    const elapsed  = now - startTime;
-    const progress = Math.min(elapsed / duration, 1);
-
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = bgColor;
-    ctx.fillRect(0, 0, W, H);
-
-    // lane guides
-    for (let i = 0; i < 3; i++) {
-      const a = 0.05 + 0.03 * Math.sin(elapsed * 0.0008 + i * 2);
-      ctx.strokeStyle = `rgba(76,175,80,${a})`;
-      ctx.lineWidth = 1; ctx.setLineDash([6, 14]);
-      ctx.beginPath(); ctx.moveTo(0, ZONES[i]); ctx.lineTo(W, ZONES[i]); ctx.stroke();
-    }
-    ctx.setLineDash([]);
-
-    // spawn orbs
-    if (now - lastSpawn > spawnInterval && orbsSpawned < totalOrbs) {
-      const zone = Math.floor(Math.random() * 3);
-      const id   = 'o_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
-      orbs.push({ id, x: W + 18, y: ZONES[zone], done: false });
-      orbsSpawned++; lastSpawn = now;
-    }
-
-    runnerY += (targetY - runnerY) * 0.1;
-
-    // update orbs
-    orbs = orbs.filter(orb => {
-      if (orb.done) return false;
-      orb.x -= speed / 60;
-
-      const dx   = (RUNNER_X + 14) - orb.x;
-      const dy   = runnerY - orb.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-
-      if (dist < 22 && !collectedIds.has(orb.id)) {
-        collectedIds.add(orb.id);
-        collected++;
-        const el = document.getElementById(countId);
-        if (el) el.textContent = '⚡ ' + collected + ' / ' + total;
-        popups.push({ x: orb.x, y: orb.y - 18, text: '+1 Prebiotic 🌿', color: '#81C784', age: 0, life: 45 });
-        orb.done = true;
-        return false;
-      }
-      if (orb.x < -32) {
-        if (!collectedIds.has(orb.id))
-          popups.push({ x: 16, y: orb.y, text: 'missed', color: 'rgba(255,255,255,0.25)', age: 0, life: 40 });
-        return false;
-      }
-
-      // draw orb
-      const pulse = 1 + 0.07 * Math.sin(elapsed * 0.007 + orb.x * 0.08);
-      ctx.fillStyle = '#4CAF50'; ctx.globalAlpha = 0.88;
-      ctx.beginPath(); ctx.arc(orb.x, orb.y, 15 * pulse, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = 'rgba(129,199,132,0.3)'; ctx.lineWidth = 4;
-      ctx.beginPath(); ctx.arc(orb.x, orb.y, 15 * pulse + 5, 0, Math.PI * 2); ctx.stroke();
-      ctx.fillStyle = 'white'; ctx.globalAlpha = 1;
-      ctx.font = 'bold 10px DM Sans,sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillText('P', orb.x, orb.y + 0.5);
-      return true;
-    });
-
-    // draw runner
-    ctx.globalAlpha = 1; ctx.textAlign = 'left';
-    ctx.font = '26px serif'; ctx.textBaseline = 'middle';
-    ctx.fillText(RUNNER_EMOJI, RUNNER_X - 2, runnerY);
-
-    // draw popups
-    popups = popups.filter(p => {
-      p.age++;
-      ctx.globalAlpha = Math.max(0, 1 - p.age / p.life);
-      ctx.font = '500 11px DM Sans,sans-serif'; ctx.fillStyle = p.color;
-      ctx.textAlign = 'center';
-      ctx.fillText(p.text, p.x, p.y - p.age * 0.45);
+      /* Draw runner */
       ctx.globalAlpha = 1;
-      return p.age < p.life;
-    });
+      ctx.shadowColor = 'rgba(255,255,255,0.9)'; ctx.shadowBlur = 14;
+      ctx.font = '26px serif'; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+      ctx.fillText(RUNNER_EMOJI, RUNNER_X - 2, runnerY);
+      ctx.shadowBlur = 0;
 
-    ctx.textAlign = 'left';
-    ctx.font = '10px DM Sans,sans-serif';
-    ctx.fillStyle = 'rgba(255,255,255,0.18)';
-    ctx.textAlign = 'right';
-    ctx.fillText('tap upper / lower half to move', W - 10, H - 10);
-    ctx.textAlign = 'left';
+      /* Draw popups */
+      popups = popups.filter(p => {
+        p.age++;
+        ctx.globalAlpha = Math.max(0, 1 - p.age / p.life);
+        ctx.font = '18px serif'; ctx.textAlign = 'center';
+        ctx.fillText(p.text, p.x, p.y - p.age * 0.5);
+        ctx.globalAlpha = 1;
+        return p.age < p.life;
+      });
+      ctx.textAlign = 'left';
 
-    // timer bar
-    const timerEl = document.getElementById(timerId);
-    if (timerEl) timerEl.style.width = Math.round((1 - progress) * 100) + '%';
+      /* Timer bar */
+      document.getElementById('l4-timer').style.width = Math.round((1 - progress) * 100) + '%';
 
-    // Gut Test flash
-    if (elapsed >= flashTime && !flashShown && !flashDone) {
-      flashShown = true;
-      const fo = document.getElementById(flashId);
-      if (fo) fo.classList.add('visible');
-      setTimeout(() => {
-        if (fo) fo.classList.remove('visible');
-        flashDone = true; flashShown = false;
-      }, 2800);
-    }
+      /* Messages */
+      const msgEl = document.getElementById('l4-msg');
+      msgs.forEach(m => {
+        if (elapsed > m.time && !msgShown.includes(m.time)) {
+          msgShown.push(m.time);
+          msgEl.style.opacity = '0';
+          setTimeout(() => { msgEl.textContent = m.text; msgEl.style.opacity = '1'; }, 300);
+          setTimeout(() => { msgEl.style.opacity = '0'; }, 2200);
+        }
+      });
 
-    if (progress >= 1) {
-      gameEnded = true;
-      cancelAnimationFrame(rafId);
-      showLevelSummary(collected, total, levelNum, summaryId, scoreElId, barElId, msgElId, nextBtnId, nextFn);
-      return;
+      if (progress >= 1) { cancelAnimationFrame(rafId); setTimeout(showCard, 600); return; }
+      rafId = requestAnimationFrame(frame);
     }
     rafId = requestAnimationFrame(frame);
-  }
+  }));
+})();
 
-  rafId = requestAnimationFrame(frame);
-}
-
-/* ─── RUNNER: level summary overlay ─── */
-function showLevelSummary(collected, total, levelNum, summaryId, scoreElId, barElId, msgElId, nextBtnId, nextFn) {
-  const overlay = document.getElementById(summaryId);
-  if (!overlay) return;
-  overlay.classList.add('visible');
-
-  GS.save({ ['runner' + levelNum + '_collected']: collected, levels_reached: levelNum });
-
-  // count-up animation
-  let n = 0;
-  const scoreEl = document.getElementById(scoreElId);
-  const iv = setInterval(() => {
-    n = Math.min(n + 1, collected);
-    if (scoreEl) scoreEl.textContent = n;
-    if (n >= collected) clearInterval(iv);
-  }, 40);
-
+/* ── Card reveal ── */
+function showCard() {
+  goTo('card');
   setTimeout(() => {
-    const barEl = document.getElementById(barElId);
-    if (barEl) barEl.style.width = Math.round((collected / total) * 100) + '%';
-  }, 400);
-
-  const pct = Math.round((collected / total) * 100);
-  const msgEl = document.getElementById(msgElId);
-  if (msgEl) {
-    if (pct < 35)      msgEl.textContent = 'On your current diet, your gut is missing most of what it needs.';
-    else if (pct < 60) msgEl.textContent = 'Your gut is picking up some prebiotics — but still leaving a lot on the table.';
-    else               msgEl.textContent = 'Not bad! Your gut is capturing more than most. A Gut Test could unlock the rest.';
-  }
-
-  const nextBtn = document.getElementById(nextBtnId);
-  if (nextBtn) nextBtn.onclick = nextFn;
+    const persona = PERSONAS[s.personaKey];
+    if (!persona) return;
+    const g1 = persona.gradient[0], g2 = persona.gradient[1];
+    const wrap = document.getElementById('persona-card-wrap');
+    wrap.innerHTML = `
+      <div class="persona-card card-reveal" id="persona-card">
+        <div class="persona-card-header" style="background:linear-gradient(135deg,${g1},${g2});">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;width:100%;margin-bottom:14px;">
+            <div style="font-size:10px;color:rgba(255,255,255,0.65);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;">iom Bioworks</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.55);">Gut Persona</div>
+          </div>
+          <div style="font-size:54px;margin-bottom:10px;">${persona.emoji}</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:white;font-weight:600;margin-bottom:4px;">${persona.name}</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.7);">${s.name}'s Gut Profile</div>
+        </div>
+        <div class="persona-card-body">
+          <div style="text-align:center;margin-bottom:18px;">
+            <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Gut Score</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:60px;color:var(--pink);font-weight:600;line-height:1;" id="score-display">0</div>
+            <div style="font-size:12px;color:var(--muted);">out of 100</div>
+          </div>
+          <div>
+            <div class="stat-bar-row"><div class="stat-bar-label">Fiber</div><div class="stat-bar-wrap"><div class="stat-bar-fill" id="bar-fiber"></div></div><div class="stat-bar-val" id="val-fiber">0</div></div>
+            <div class="stat-bar-row"><div class="stat-bar-label">Stress</div><div class="stat-bar-wrap"><div class="stat-bar-fill" id="bar-stress" style="background:var(--pink);"></div></div><div class="stat-bar-val" id="val-stress">0</div></div>
+            <div class="stat-bar-row" style="margin-bottom:0;"><div class="stat-bar-label">Diversity</div><div class="stat-bar-wrap"><div class="stat-bar-fill" id="bar-div"></div></div><div class="stat-bar-val" id="val-div">0</div></div>
+          </div>
+        </div>
+        <div class="persona-card-footer">
+          <p style="font-size:13px;color:var(--navy);line-height:1.6;margin-bottom:5px;font-weight:500;">${persona.line1}</p>
+          <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px;">${persona.line2}</p>
+          <a href="https://iombio.com" target="_blank" style="font-size:11px;color:var(--pink);font-weight:500;text-decoration:none;">iombio.com ↗</a>
+        </div>
+      </div>`;
+    wrap.style.opacity = '1';
+    let n = 0;
+    const scoreEl = document.getElementById('score-display');
+    const iv = setInterval(() => { n = Math.min(n+2, s.finalScore||0); if(scoreEl) scoreEl.textContent=n; if(n>=(s.finalScore||0)) clearInterval(iv); }, 28);
+    setTimeout(() => {
+      document.getElementById('bar-fiber').style.width  = (s.fiberLevel||0) + '%';
+      document.getElementById('val-fiber').textContent  = s.fiberLevel||0;
+      document.getElementById('bar-stress').style.width = (s.stressIndex||0) + '%';
+      document.getElementById('val-stress').textContent = s.stressIndex||0;
+      document.getElementById('bar-div').style.width    = (s.gutDiversity||0) + '%';
+      document.getElementById('val-div').textContent    = s.gutDiversity||0;
+    }, 700);
+    fireWebhook();
+  }, 450);
 }
 
-/* ─── INIT (runs after DOM is ready) ─── */
-document.addEventListener('DOMContentLoaded', function () {
-
-  // redirect if no session
-  const state = GS.get();
-  if (!state.name) { window.location.href = 'index.html'; return; }
-
-  /* Render shared headers */
-  ['morning','lunch','afternoon','dinner'].forEach((s,i) => {
-    const pills = ['Morning · 1 of 4','Lunch · 2 of 4','Afternoon · 3 of 4','Evening · 4 of 4'];
-    const backs = ['index.html','#','#','#'];
-    const backLabels = ['Back','Back','Back','Back'];
-    const el = document.getElementById('hdr-'+s);
-    if (el) el.outerHTML = renderHeader({ pill:pills[i], showMute:true, showBack:true, backHref:backs[i], backLabel:backLabels[i] });
+/* ── Image capture ── */
+function captureCard() {
+  return new Promise((resolve, reject) => {
+    const card = document.getElementById('persona-card');
+    if (!card || typeof html2canvas === 'undefined') { reject(new Error('Not ready')); return; }
+    html2canvas(card, { scale:2, useCORS:true, allowTaint:true, backgroundColor:null, logging:false })
+      .then(c => c.toBlob(b => b ? resolve(b) : reject(new Error('toBlob failed')), 'image/png'))
+      .catch(reject);
   });
-  const fg = document.getElementById('footer-game');
-  if (fg) fg.outerHTML = renderFooter();
+}
 
-  // personalise name
-  const nameEl = document.getElementById('morning-name');
-  if (nameEl) nameEl.textContent = state.name + "'s";
+function setButtonLoading(id, loading) {
+  const btn = document.getElementById(id);
+  if (!btn) return;
+  if (loading) { btn.dataset.orig = btn.innerHTML; btn.innerHTML = '<span class="share-loading"></span>Preparing...'; btn.disabled = true; }
+  else { btn.innerHTML = btn.dataset.orig || btn.innerHTML; btn.disabled = false; }
+}
 
-  // back buttons
-  document.getElementById('back-to-morning').addEventListener('click',   () => goTo('morning'));
-  document.getElementById('back-to-lunch').addEventListener('click',     () => goTo('lunch'));
-  document.getElementById('back-to-afternoon').addEventListener('click', () => goTo('afternoon'));
-
-  /* ── MORNING ── */
-  buildChoiceOptions(
-    'morning-options', 'morning',
-    'btn-morning-next', 'choice_morning', 'morning_score',
-    () => {
-      goTo('runner1');
-      setTimeout(() => beginCountdown('prerunner-overlay', 'prerunner-count', () => {
-        runLevel('runner-canvas', 'timer-bar', 'orb-count-display',
-                 'flash-overlay', 'summary-overlay', 'summary-score',
-                 'summary-bar', 'summary-msg', 'summary-next-btn',
-                 RUNNER_CONFIG.level1, 1, 20, () => goTo('lunch'));
-      }), 100);
-    }
-  );
-
-  /* ── LUNCH PLATE ── */
-  buildLunchSections();
-
-  /* ── AFTERNOON ── */
-  buildChoiceOptions(
-    'afternoon-options', 'afternoon',
-    'btn-afternoon-next', 'choice_afternoon', 'afternoon_score',
-    () => {
-      goTo('runner3');
-      setTimeout(() => beginCountdown('prerunner-overlay-3', 'prerunner-count-3', () => {
-        runLevel('runner-canvas-3', 'timer-bar-3', 'orb-count-display-3',
-                 'flash-overlay-3', 'summary-overlay-3', 'summary-score-3',
-                 'summary-bar-3', 'summary-msg-3', 'summary-next-btn-3',
-                 RUNNER_CONFIG.level3, 3, 40, () => goTo('dinner'));
-      }), 100);
-    }
-  );
-
-  /* ── DINNER ── */
-  buildChoiceOptions(
-    'dinner-options', 'dinner',
-    'btn-dinner-next', 'choice_dinner', 'dinner_score',
-    () => {
-      const s      = GS.get();
-      const result = calcPersona(s);
-      GS.save(result);
-      window.location.href = 'results.html';
-    }
-  );
-
+/* ── WhatsApp share ── */
+document.getElementById('btn-wa').addEventListener('click', async () => {
+  const persona   = PERSONAS[s.personaKey];
+  const cardUrl   = buildCardUrl();
+  const shareText = 'I just discovered I am a ' + persona.name + '\nMy Gut Score is ' + (s.finalScore||0) + '/100.\n\n' + persona.line1 + '\n\nSee my Gut Persona card ->\n' + cardUrl + '\n\n#GutJourney #iomBioworks';
+  if (navigator.share && navigator.canShare) {
+    setButtonLoading('btn-wa', true);
+    try {
+      const blob = await captureCard();
+      const file = new File([blob], 'my-gut-persona.png', { type:'image/png' });
+      if (navigator.canShare({ files:[file], text:shareText })) {
+        await navigator.share({ files:[file], text:shareText });
+        setButtonLoading('btn-wa', false); return;
+      }
+    } catch(e) {}
+    setButtonLoading('btn-wa', false);
+  }
+  window.open('https://wa.me/?text=' + encodeURIComponent(shareText), '_blank');
 });
+
+/* ── Instagram share ── */
+document.getElementById('btn-ig').addEventListener('click', async () => {
+  setButtonLoading('btn-ig', true);
+  try {
+    const blob = await captureCard();
+    const url  = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'my-gut-persona-' + (s.personaKey||'card') + '.png';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    showToast('Card saved! Open Instagram → Stories → add image', 4000);
+  } catch(e) { showToast('Screenshot the card and share to Instagram Stories!', 3500); }
+  setButtonLoading('btn-ig', false);
+});
+
+/* ── Webhook ── */
+function fireWebhook() {
+  const st = GS.get();
+  const channel = st.channel || new URLSearchParams(window.location.search).get('utm_source') || 'direct';
+  const payload = {
+    player_name: s.name, whatsapp_number: s.whatsapp_number||'',
+    timestamp: new Date().toISOString(), channel,
+    avatar: s.avatar, goal_chosen: s.goal,
+    choice_morning: s.choice_morning, choice_lunch_base: s.lunch_base,
+    choice_lunch_protein: s.lunch_protein, choice_lunch_veg: s.lunch_veg,
+    choice_lunch_side: s.lunch_side, choice_afternoon: s.choice_afternoon,
+    choice_dinner: s.choice_dinner,
+    morning_score: s.morning_score||0, lunch_score: s.lunch_score||0,
+    afternoon_score: s.afternoon_score||0, dinner_score: s.dinner_score||0,
+    runner1_collected: s.runner1_collected||0, runner2_collected: s.runner2_collected||0,
+    runner3_collected: s.runner3_collected||0,
+    behavioural_score: s.behavioural||0, runner_score: s.runnerScore||0,
+    final_score: s.finalScore||0, persona: s.personaKey, boss: s.boss,
+    levels_reached: s.levels_reached||4, game_completed: true,
+    card_url: buildCardUrl()
+  };
+  fetch('https://hook.eu1.make.com/xua3jfbh3ysmhobdhs7t5lxfqk5fzhck', {
+    method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)
+  }).catch(()=>{});
+}
 </script>
 </body>
 </html>
