@@ -38,6 +38,33 @@
     </div>
   </div>
 
+  <!-- PHONE CAPTURE -->
+  <div id="screen-phone" class="screen" style="background:var(--navy);display:flex;flex-direction:column;">
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 28px;text-align:center;">
+      <div style="font-size:48px;margin-bottom:20px;">🎁</div>
+      <div style="font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:12px;">Exclusive offer for you</div>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:32px;color:white;font-weight:600;line-height:1.2;margin-bottom:10px;">Unlock your<br><em style="color:var(--pink);">gut discount</em></h2>
+      <p style="font-size:14px;color:rgba(255,255,255,0.6);line-height:1.7;margin-bottom:32px;max-width:280px;">Get a personalised discount code on WhatsApp — based on your Gut Persona.</p>
+
+      <div style="width:100%;max-width:320px;margin-bottom:16px;">
+        <div style="display:flex;align-items:center;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.2);border-radius:50px;overflow:hidden;transition:border-color 0.2s;" id="phone-input-wrap">
+          <span style="padding:0 16px;font-size:15px;color:rgba(255,255,255,0.5);font-family:'DM Sans',sans-serif;flex-shrink:0;">+91</span>
+          <input
+            type="tel"
+            id="phone-input"
+            maxlength="10"
+            placeholder="WhatsApp number"
+            style="flex:1;background:transparent;border:none;outline:none;padding:17px 16px 17px 0;font-size:15px;color:white;font-family:'DM Sans',sans-serif;"
+          />
+        </div>
+        <p id="phone-error" style="font-size:12px;color:var(--pink);margin-top:8px;display:none;">Please enter a valid 10-digit number</p>
+      </div>
+
+      <button id="btn-phone-submit" style="width:100%;max-width:320px;background:var(--pink);color:white;border:none;border-radius:50px;padding:17px 24px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;margin-bottom:16px;">Send me my discount 🎁</button>
+      <button id="btn-phone-skip" style="background:transparent;border:none;color:rgba(255,255,255,0.35);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;text-decoration:underline;padding:8px;">Skip, just show my card →</button>
+    </div>
+  </div>
+
   <!-- PERSONA CARD -->
   <div id="screen-card" class="screen" style="background:var(--navy);overflow-y:auto;">
     <div style="padding:16px 20px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
@@ -213,12 +240,52 @@ function buildCardUrl() {
         }
       });
 
-      if (progress >= 1) { cancelAnimationFrame(rafId); setTimeout(showCard, 600); return; }
+      if (progress >= 1) { cancelAnimationFrame(rafId); setTimeout(showPhoneScreen, 600); return; }
       rafId = requestAnimationFrame(frame);
     }
     rafId = requestAnimationFrame(frame);
   }));
 })();
+
+/* ── Phone screen ── */
+function showPhoneScreen() {
+  goTo('phone');
+
+  // Focus input after transition
+  setTimeout(() => {
+    const input = document.getElementById('phone-input');
+    if (input) input.focus();
+  }, 400);
+
+  // Input: style focus
+  const wrap = document.getElementById('phone-input-wrap');
+  const input = document.getElementById('phone-input');
+  input.addEventListener('focus', () => {
+    wrap.style.borderColor = 'var(--pink)';
+  });
+  input.addEventListener('blur', () => {
+    wrap.style.borderColor = 'rgba(255,255,255,0.2)';
+  });
+
+  // Submit
+  document.getElementById('btn-phone-submit').addEventListener('click', () => {
+    const num = input.value.trim().replace(/\D/g, '');
+    const errEl = document.getElementById('phone-error');
+    if (num.length !== 10) {
+      errEl.style.display = 'block';
+      return;
+    }
+    errEl.style.display = 'none';
+    const fullNum = '91' + num;
+    GS.save({ whatsapp_number: fullNum });
+    showCard();
+  });
+
+  // Skip
+  document.getElementById('btn-phone-skip').addEventListener('click', () => {
+    showCard();
+  });
+}
 
 /* ── Card reveal ── */
 function showCard() {
@@ -328,23 +395,23 @@ document.getElementById('btn-ig').addEventListener('click', async () => {
 
 /* ── Webhook ── */
 function fireWebhook() {
-  const st = GS.get();
+  const st = GS.get();  // fresh read — includes phone number if just entered
   const channel = st.channel || new URLSearchParams(window.location.search).get('utm_source') || 'direct';
   const payload = {
-    player_name: s.name, whatsapp_number: s.whatsapp_number||'',
+    player_name: st.name, whatsapp_number: st.whatsapp_number||'',
     timestamp: new Date().toISOString(), channel,
-    avatar: s.avatar, goal_chosen: s.goal,
-    choice_morning: s.choice_morning, choice_lunch_base: s.lunch_base,
-    choice_lunch_protein: s.lunch_protein, choice_lunch_veg: s.lunch_veg,
-    choice_lunch_side: s.lunch_side, choice_afternoon: s.choice_afternoon,
-    choice_dinner: s.choice_dinner,
-    morning_score: s.morning_score||0, lunch_score: s.lunch_score||0,
-    afternoon_score: s.afternoon_score||0, dinner_score: s.dinner_score||0,
-    runner1_collected: s.runner1_collected||0, runner2_collected: s.runner2_collected||0,
-    runner3_collected: s.runner3_collected||0,
-    behavioural_score: s.behavioural||0, runner_score: s.runnerScore||0,
-    final_score: s.finalScore||0, persona: s.personaKey, boss: s.boss,
-    levels_reached: s.levels_reached||4, game_completed: true,
+    avatar: st.avatar, goal_chosen: st.goal,
+    choice_morning: st.choice_morning, choice_lunch_base: st.lunch_base,
+    choice_lunch_protein: st.lunch_protein, choice_lunch_veg: st.lunch_veg,
+    choice_lunch_side: st.lunch_side, choice_afternoon: st.choice_afternoon,
+    choice_dinner: st.choice_dinner,
+    morning_score: st.morning_score||0, lunch_score: st.lunch_score||0,
+    afternoon_score: st.afternoon_score||0, dinner_score: st.dinner_score||0,
+    runner1_collected: st.runner1_collected||0, runner2_collected: st.runner2_collected||0,
+    runner3_collected: st.runner3_collected||0,
+    behavioural_score: st.behavioural||0, runner_score: st.runnerScore||0,
+    final_score: st.finalScore||0, persona: st.personaKey, boss: st.boss,
+    levels_reached: st.levels_reached||4, game_completed: true,
     card_url: buildCardUrl()
   };
   fetch('https://hook.eu1.make.com/xua3jfbh3ysmhobdhs7t5lxfqk5fzhck', {
